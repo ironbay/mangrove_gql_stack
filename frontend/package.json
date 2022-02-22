@@ -1,5 +1,5 @@
 {
-  "name": "@acme/frontend",
+  "name": "@mangrove/frontend",
   "version": "0.0.0",
   "scripts": {
     "dev": "sst-env -- vite",

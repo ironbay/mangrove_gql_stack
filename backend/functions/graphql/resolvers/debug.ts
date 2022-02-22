@@ -1,4 +1,4 @@
-import { SQL } from "@acme/core";
+import { SQL } from "@mangrove/core";
 import { Resolvers } from "./types";
 
 export const DebugResolver: Resolvers = {

@@ -1,5 +1,5 @@
 import { typeDefs } from "./schema";
-import { useContext, Context } from "@acme/core";
+import { useContext, Context } from "@mangrove/core";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 
 import { TodoResolver } from "./resolvers/todo";
