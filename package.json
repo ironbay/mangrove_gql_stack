@@ -1,0 +1,28 @@
+{
+  "name": "acme",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "sst:start": "NODE_OPTIONS=--enable-source-maps sst start",
+    "gql:gen": "graphql-codegen -c ./graphql/codegen.yml"
+  },
+  "devDependencies": {
+    "@graphql-codegen/add": "^3.1.1",
+    "@graphql-codegen/cli": "^2.3.1",
+    "@graphql-codegen/typescript": "^2.4.2",
+    "@graphql-codegen/typescript-operations": "^2.2.2",
+    "@graphql-codegen/typescript-resolvers": "^2.4.3",
+    "@graphql-codegen/typescript-urql": "^3.4.2",
+    "@serverless-stack/cli": "0.65.1",
+    "@serverless-stack/resources": "0.65.1",
+    "@tsconfig/node14": "^1.0.1",
+    "graphql": "^16.2.0",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {}
+}

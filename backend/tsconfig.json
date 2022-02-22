@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "include": ["core", "services", "extract", "test", "scripts"],
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@acme/core": ["./core"]
+    }
+  }
+}
