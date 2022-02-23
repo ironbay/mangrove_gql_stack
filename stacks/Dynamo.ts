@@ -8,7 +8,13 @@ export class Dynamo extends sst.Stack {
   constructor(scope: sst.App) {
     super(scope, "dynamo");
 
-    const table = new sst.Table(this, "DYNAMO", {});
+    const table = new sst.Table(this, "DYNAMO", {
+      fields: {
+        pk: sst.TableFieldType.STRING,
+        sk: sst.TableFieldType.STRING,
+      },
+      primaryIndex: { partitionKey: "pk", sortKey: "sk" },
+    });
 
     this.outputs = {
       table,
