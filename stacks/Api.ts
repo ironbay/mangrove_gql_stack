@@ -1,11 +1,13 @@
 import * as sst from "@serverless-stack/resources";
 import { HttpMethods } from "aws-cdk-lib/aws-s3";
 
+import { Dynamo } from "./Dynamo";
 import { Database } from "./Database";
 import { Auth } from "./Auth";
 import { Parameter } from "./Parameter";
 
 type Props = {
+  dynamo: Dynamo["outputs"];
   db: Database["outputs"];
   auth: Auth["outputs"];
 };
@@ -42,7 +44,8 @@ export class Api extends sst.Stack {
       graphql.serverFunction
     );
 
-    new sst.Api(this, "APi", {});
+    const api = new sst.Api(this, "APi", {});
+    api.attachPermissions([props.dynamo.table]);
 
     Parameter.use(
       graphql.serverFunction,
@@ -65,6 +68,10 @@ export class Api extends sst.Stack {
       }),
       new Parameter(this, {
         name: "MY_SPECIAL_CONFIG",
+      }),
+      new Parameter(this, {
+        name: "DYNAMO_TABLE",
+        value: props.dynamo.table.tableName,
       })
     );
 

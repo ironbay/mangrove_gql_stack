@@ -7,6 +7,7 @@
     "@serverless-stack/node": "^0.60.11",
     "aws-jwt-verify": "^2.0.0",
     "aws-sdk": "^2.1058.0",
+    "dynamodb-onetable": "^2.3.2",
     "kysely": "^0.16.6",
     "kysely-data-api": "^0.0.9"
   },
