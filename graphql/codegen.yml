@@ -8,7 +8,7 @@ generates:
     config:
       useIndexSignature: true
       makeResolverTypeCallable: true
-      contextType: "@acme/core#Context"
+      contextType: "@mangrove/core#Context"
       defaultMapper: DeepPartial<{T}>
     plugins:
       - typescript
@@ -29,7 +29,6 @@ generates:
       - typescript
       - typescript-operations
       - typescript-urql
-
 
 hooks:
   afterOneFileWrite:

@@ -1,5 +1,5 @@
 {
-  "name": "acme",
+  "name": "mangrove",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,7 @@
     "frontend"
   ],
   "scripts": {
-    "sst:start": "NODE_OPTIONS=--enable-source-maps sst start",
+    "sst:start": "NODE_OPTIONS=--enable-source-maps AWS_PROFILE=ironbay-dev sst start",
     "gql:gen": "graphql-codegen -c ./graphql/codegen.yml"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from "graphql";
-import { Context } from "@acme/core";
+import { Context } from "@mangrove/core";
 import { DeepPartial } from "utility-types";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
