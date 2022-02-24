@@ -18,17 +18,21 @@ type Source {
   filters: [Filter!]!
 }
 
-union Filter = NumberFilter | StringFilter
+union Filter = TextFilter | StringFilter
 
-type NumberFilter = {
-    name: String!
-    value: Int!
-    op: String!
+interface Filter {
+  name: String!
+  op: String!
 }
 
-type StringFilter = {
-    name: String!
-    value: Int!
-    op: String!
+type NumberFilter implements Filter {
+  name: String!
+  op: String!
+  num: Int!
 }
 
+type TextFilter implements Filter {
+  name: String!
+  op: String!
+  text: String!
+}

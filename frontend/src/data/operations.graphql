@@ -26,3 +26,36 @@ mutation CreateTodo($id: String!, $title: String!) {
 mutation Upload($name: String!, $type: String!) {
   upload(name: $name, type: $type)
 }
+
+query Pipes {
+  session {
+    currentUser {
+      pipes {
+        flags {
+          enabled
+        }
+        sources {
+          account {
+            name
+            category
+            subcategory
+          }
+          filters {
+            name
+            op
+            ... on NumberFilter {
+              num
+            }
+            ... on TextFilter {
+              text
+            }
+          }
+        }
+        destinations {
+          name
+          topic
+        }
+      }
+    }
+  }
+}

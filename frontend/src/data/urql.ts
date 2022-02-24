@@ -31,6 +31,16 @@ export type Debug = {
   database: Scalars["String"];
 };
 
+export type Filter = {
+  name: Scalars["String"];
+  op: Scalars["String"];
+};
+
+export type Flags = {
+  __typename?: "Flags";
+  enabled: Scalars["Boolean"];
+};
+
 export type Mutation = {
   __typename?: "Mutation";
   createTodo: Todo;
@@ -51,6 +61,35 @@ export type MutationUploadArgs = {
   type: Scalars["String"];
 };
 
+export type NumberFilter = Filter & {
+  __typename?: "NumberFilter";
+  name: Scalars["String"];
+  num: Scalars["Int"];
+  op: Scalars["String"];
+};
+
+export type Pipe = {
+  __typename?: "Pipe";
+  destinations: Array<SlackChannel>;
+  flags: Flags;
+  name: Scalars["String"];
+  sources: Array<Source>;
+};
+
+export type PlaidAccount = {
+  __typename?: "PlaidAccount";
+  category: Scalars["String"];
+  name: Scalars["String"];
+  subcategory: Scalars["String"];
+};
+
+export type PlaidConnection = {
+  __typename?: "PlaidConnection";
+  accounts: Array<PlaidAccount>;
+  id: Scalars["ID"];
+  institution: Scalars["String"];
+};
+
 export type Query = {
   __typename?: "Query";
   debug: Debug;
@@ -67,6 +106,32 @@ export type Session = {
   currentUser: User;
 };
 
+export type SlackChannel = {
+  __typename?: "SlackChannel";
+  name: Scalars["String"];
+  num_members: Scalars["Int"];
+  topic: Scalars["String"];
+};
+
+export type SlackConnection = {
+  __typename?: "SlackConnection";
+  channels: Array<SlackChannel>;
+  name: Scalars["String"];
+};
+
+export type Source = {
+  __typename?: "Source";
+  account: PlaidAccount;
+  filters: Array<Filter>;
+};
+
+export type TextFilter = Filter & {
+  __typename?: "TextFilter";
+  name: Scalars["String"];
+  op: Scalars["String"];
+  text: Scalars["String"];
+};
+
 export type Todo = {
   __typename?: "Todo";
   id: Scalars["ID"];
@@ -76,6 +141,7 @@ export type Todo = {
 export type User = {
   __typename?: "User";
   id: Scalars["ID"];
+  pipes: Array<Pipe>;
   todos: Array<Todo>;
 };
 
@@ -120,6 +186,50 @@ export type UploadMutationVariables = Exact<{
 }>;
 
 export type UploadMutation = { __typename?: "Mutation"; upload: string };
+
+export type PipesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PipesQuery = {
+  __typename?: "Query";
+  session: {
+    __typename?: "Session";
+    currentUser: {
+      __typename?: "User";
+      pipes: Array<{
+        __typename?: "Pipe";
+        flags: { __typename?: "Flags"; enabled: boolean };
+        sources: Array<{
+          __typename?: "Source";
+          account: {
+            __typename?: "PlaidAccount";
+            name: string;
+            category: string;
+            subcategory: string;
+          };
+          filters: Array<
+            | {
+                __typename?: "NumberFilter";
+                num: number;
+                name: string;
+                op: string;
+              }
+            | {
+                __typename?: "TextFilter";
+                text: string;
+                name: string;
+                op: string;
+              }
+          >;
+        }>;
+        destinations: Array<{
+          __typename?: "SlackChannel";
+          name: string;
+          topic: string;
+        }>;
+      }>;
+    };
+  };
+};
 
 export const TodosDocument = gql`
   query Todos {
@@ -177,4 +287,44 @@ export function useUploadMutation() {
   return Urql.useMutation<UploadMutation, UploadMutationVariables>(
     UploadDocument
   );
+}
+export const PipesDocument = gql`
+  query Pipes {
+    session {
+      currentUser {
+        pipes {
+          flags {
+            enabled
+          }
+          sources {
+            account {
+              name
+              category
+              subcategory
+            }
+            filters {
+              name
+              op
+              ... on NumberFilter {
+                num
+              }
+              ... on TextFilter {
+                text
+              }
+            }
+          }
+          destinations {
+            name
+            topic
+          }
+        }
+      }
+    }
+  }
+`;
+
+export function usePipesQuery(
+  options: Omit<Urql.UseQueryArgs<PipesQueryVariables>, "query"> = {}
+) {
+  return Urql.useQuery<PipesQuery>({ query: PipesDocument, ...options });
 }
