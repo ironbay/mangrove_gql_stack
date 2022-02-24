@@ -1,0 +1,34 @@
+type User {
+  pipes: [Pipe!]!
+}
+
+type Pipe {
+  flags: Flags!
+  name: String!
+  sources: [Source!]!
+  destinations: [SlackChannel!]!
+}
+
+type Flags {
+  enabled: Boolean!
+}
+
+type Source {
+  account: PlaidAccount!
+  filters: [Filter!]!
+}
+
+union Filter = NumberFilter | StringFilter
+
+type NumberFilter = {
+    name: String!
+    value: Int!
+    op: String!
+}
+
+type StringFilter = {
+    name: String!
+    value: Int!
+    op: String!
+}
+
