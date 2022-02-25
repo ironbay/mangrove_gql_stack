@@ -1,0 +1,22 @@
+type PlaidConnection {
+  id: ID!
+  institution: String!
+  accounts: [PlaidAccount!]!
+}
+
+type PlaidAccount {
+  name: String!
+  category: String!
+  subcategory: String!
+}
+
+type SlackConnection {
+  name: String!
+  channels: [SlackChannel!]!
+}
+
+type SlackChannel {
+  name: String!
+  topic: String!
+  num_members: Int!
+}
