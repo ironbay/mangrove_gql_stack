@@ -59,3 +59,32 @@ query Pipes {
     }
   }
 }
+
+query Connections {
+  session {
+    currentUser {
+      connections {
+        id
+        ... on PlaidConnection {
+          institution
+          accounts {
+            id
+            name
+            category
+            subcategory
+          }
+        }
+        ... on SlackConnection {
+          id
+          name
+          channels {
+            id
+            name
+            topic
+            num_members
+          }
+        }
+      }
+    }
+  }
+}

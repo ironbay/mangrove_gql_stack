@@ -1,3 +1,9 @@
+type User {
+  connections: [Connection!]!
+}
+
+union Connection = PlaidConnection | SlackConnection
+
 type PlaidConnection {
   id: ID!
   institution: String!
@@ -5,17 +11,20 @@ type PlaidConnection {
 }
 
 type PlaidAccount {
+  id: ID!
   name: String!
   category: String!
   subcategory: String!
 }
 
 type SlackConnection {
+  id: ID!
   name: String!
   channels: [SlackChannel!]!
 }
 
 type SlackChannel {
+  id: ID!
   name: String!
   topic: String!
   num_members: Int!
