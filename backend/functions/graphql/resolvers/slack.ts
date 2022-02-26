@@ -1,6 +1,5 @@
 import { Resolvers } from "./types";
 import { Connection } from "@mangrove/backend/core/connection";
-import { cursorPaginationEnabledMethods } from "@slack/web-api";
 
 export const SlackResolver: Resolvers = {
   Mutation: {
