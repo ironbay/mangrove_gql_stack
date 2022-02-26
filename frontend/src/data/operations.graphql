@@ -60,11 +60,19 @@ query Pipes {
   }
 }
 
+mutation CreatePipe($input: CreatePipeInput!) {
+  createPipe(input: $input) {
+    id
+    name
+  }
+}
+
 query Connections {
   session {
     currentUser {
       connections {
         id
+        kind
         ... on PlaidConnection {
           institution
           accounts {
@@ -75,7 +83,6 @@ query Connections {
           }
         }
         ... on SlackConnection {
-          id
           name
           channels {
             id
@@ -86,5 +93,18 @@ query Connections {
         }
       }
     }
+  }
+}
+
+mutation CreatePlaidStart($input: CreatePlaidStartInput!) {
+  createPlaidStart(input: $input) {
+    public_token
+    state
+  }
+}
+
+mutation CreateSlackStart($input: CreateSlackStartInput!) {
+  createSlackStart(input: $input) {
+    url
   }
 }

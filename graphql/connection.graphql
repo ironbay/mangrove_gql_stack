@@ -4,8 +4,28 @@ type User {
 
 union Connection = PlaidConnection | SlackConnection
 
-type PlaidConnection {
+interface Connection {
   id: ID!
+  kind: String!
+}
+
+type Mutation {
+  createPlaidStart(input: CreatePlaidStartInput!): PlaidStart!
+  createSlackStart(input: CreateSlackStartInput!): SlackStart!
+}
+
+input CreatePlaidStartInput {
+  user: String!
+}
+
+type PlaidStart {
+  public_token: String!
+  state: String!
+}
+
+type PlaidConnection implements Connection {
+  id: ID!
+  kind: String!
   institution: String!
   accounts: [PlaidAccount!]!
 }
@@ -17,8 +37,18 @@ type PlaidAccount {
   subcategory: String!
 }
 
-type SlackConnection {
+input CreateSlackStartInput {
+  user: String!
+}
+
+type SlackStart {
+  url: String!
+  state: String!
+}
+
+type SlackConnection implements Connection {
   id: ID!
+  kind: String!
   name: String!
   channels: [SlackChannel!]!
 }
