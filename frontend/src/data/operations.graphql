@@ -59,3 +59,52 @@ query Pipes {
     }
   }
 }
+
+mutation CreatePipe($input: CreatePipeInput!) {
+  createPipe(input: $input) {
+    id
+    name
+  }
+}
+
+query Connections {
+  session {
+    currentUser {
+      connections {
+        id
+        kind
+        ... on PlaidConnection {
+          institution
+          accounts {
+            id
+            name
+            category
+            subcategory
+          }
+        }
+        ... on SlackConnection {
+          name
+          channels {
+            id
+            name
+            topic
+            num_members
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation CreatePlaidStart($input: CreatePlaidStartInput!) {
+  createPlaidStart(input: $input) {
+    public_token
+    state
+  }
+}
+
+mutation CreateSlackStart($input: CreateSlackStartInput!) {
+  createSlackStart(input: $input) {
+    url
+  }
+}

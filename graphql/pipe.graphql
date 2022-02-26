@@ -2,11 +2,48 @@ type User {
   pipes: [Pipe!]!
 }
 
+type Mutation {
+  createPipe(input: CreatePipeInput!): Pipe!
+}
+
 type Pipe {
+  id: ID!
   flags: Flags!
   name: String!
   sources: [Source!]!
   destinations: [SlackChannel!]!
+}
+
+input CreatePipeInput {
+  flags: CreateFlagInput!
+  name: String!
+  sources: [CreateSourceInput!]!
+}
+
+input CreateFlagInput {
+  enabled: Boolean!
+}
+
+input CreateSourceInput {
+  account: String!
+  filters: CreateFiltersInput!
+}
+
+input CreateFiltersInput {
+  num: CreateNumberFilter!
+  text: CreateTextFilter!
+}
+
+input CreateNumberFilter {
+  name: String!
+  op: String!
+  num: Int!
+}
+
+input CreateTextFilter {
+  name: String!
+  op: String!
+  text: String!
 }
 
 type Flags {
@@ -14,6 +51,7 @@ type Flags {
 }
 
 type Source {
+  id: ID!
   account: PlaidAccount!
   filters: [Filter!]!
 }
@@ -21,17 +59,20 @@ type Source {
 union Filter = TextFilter | StringFilter
 
 interface Filter {
+  id: ID!
   name: String!
   op: String!
 }
 
 type NumberFilter implements Filter {
+  id: ID!
   name: String!
   op: String!
   num: Int!
 }
 
 type TextFilter implements Filter {
+  id: ID!
   name: String!
   op: String!
   text: String!

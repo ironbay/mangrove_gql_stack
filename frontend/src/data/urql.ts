@@ -21,6 +21,51 @@ export type Scalars = {
   Float: number;
 };
 
+export type Connection = {
+  id: Scalars["ID"];
+  kind: Scalars["String"];
+};
+
+export type CreateFiltersInput = {
+  num: CreateNumberFilter;
+  text: CreateTextFilter;
+};
+
+export type CreateFlagInput = {
+  enabled: Scalars["Boolean"];
+};
+
+export type CreateNumberFilter = {
+  name: Scalars["String"];
+  num: Scalars["Int"];
+  op: Scalars["String"];
+};
+
+export type CreatePipeInput = {
+  flags: CreateFlagInput;
+  name: Scalars["String"];
+  sources: Array<CreateSourceInput>;
+};
+
+export type CreatePlaidStartInput = {
+  user: Scalars["String"];
+};
+
+export type CreateSlackStartInput = {
+  user: Scalars["String"];
+};
+
+export type CreateSourceInput = {
+  account: Scalars["String"];
+  filters: CreateFiltersInput;
+};
+
+export type CreateTextFilter = {
+  name: Scalars["String"];
+  op: Scalars["String"];
+  text: Scalars["String"];
+};
+
 export type CreateTodoInput = {
   id: Scalars["String"];
   title: Scalars["String"];
@@ -32,6 +77,7 @@ export type Debug = {
 };
 
 export type Filter = {
+  id: Scalars["ID"];
   name: Scalars["String"];
   op: Scalars["String"];
 };
@@ -43,9 +89,24 @@ export type Flags = {
 
 export type Mutation = {
   __typename?: "Mutation";
+  createPipe: Pipe;
+  createPlaidStart: PlaidStart;
+  createSlackStart: SlackStart;
   createTodo: Todo;
   removeTodo?: Maybe<Todo>;
   upload: Scalars["String"];
+};
+
+export type MutationCreatePipeArgs = {
+  input: CreatePipeInput;
+};
+
+export type MutationCreatePlaidStartArgs = {
+  input: CreatePlaidStartInput;
+};
+
+export type MutationCreateSlackStartArgs = {
+  input: CreateSlackStartInput;
 };
 
 export type MutationCreateTodoArgs = {
@@ -63,6 +124,7 @@ export type MutationUploadArgs = {
 
 export type NumberFilter = Filter & {
   __typename?: "NumberFilter";
+  id: Scalars["ID"];
   name: Scalars["String"];
   num: Scalars["Int"];
   op: Scalars["String"];
@@ -72,6 +134,7 @@ export type Pipe = {
   __typename?: "Pipe";
   destinations: Array<SlackChannel>;
   flags: Flags;
+  id: Scalars["ID"];
   name: Scalars["String"];
   sources: Array<Source>;
 };
@@ -79,15 +142,23 @@ export type Pipe = {
 export type PlaidAccount = {
   __typename?: "PlaidAccount";
   category: Scalars["String"];
+  id: Scalars["ID"];
   name: Scalars["String"];
   subcategory: Scalars["String"];
 };
 
-export type PlaidConnection = {
+export type PlaidConnection = Connection & {
   __typename?: "PlaidConnection";
   accounts: Array<PlaidAccount>;
   id: Scalars["ID"];
   institution: Scalars["String"];
+  kind: Scalars["String"];
+};
+
+export type PlaidStart = {
+  __typename?: "PlaidStart";
+  public_token: Scalars["String"];
+  state: Scalars["String"];
 };
 
 export type Query = {
@@ -108,25 +179,36 @@ export type Session = {
 
 export type SlackChannel = {
   __typename?: "SlackChannel";
+  id: Scalars["ID"];
   name: Scalars["String"];
   num_members: Scalars["Int"];
   topic: Scalars["String"];
 };
 
-export type SlackConnection = {
+export type SlackConnection = Connection & {
   __typename?: "SlackConnection";
   channels: Array<SlackChannel>;
+  id: Scalars["ID"];
+  kind: Scalars["String"];
   name: Scalars["String"];
+};
+
+export type SlackStart = {
+  __typename?: "SlackStart";
+  state: Scalars["String"];
+  url: Scalars["String"];
 };
 
 export type Source = {
   __typename?: "Source";
   account: PlaidAccount;
   filters: Array<Filter>;
+  id: Scalars["ID"];
 };
 
 export type TextFilter = Filter & {
   __typename?: "TextFilter";
+  id: Scalars["ID"];
   name: Scalars["String"];
   op: Scalars["String"];
   text: Scalars["String"];
@@ -140,6 +222,7 @@ export type Todo = {
 
 export type User = {
   __typename?: "User";
+  connections: Array<Connection>;
   id: Scalars["ID"];
   pipes: Array<Pipe>;
   todos: Array<Todo>;
@@ -229,6 +312,77 @@ export type PipesQuery = {
       }>;
     };
   };
+};
+
+export type CreatePipeMutationVariables = Exact<{
+  input: CreatePipeInput;
+}>;
+
+export type CreatePipeMutation = {
+  __typename?: "Mutation";
+  createPipe: { __typename?: "Pipe"; id: string; name: string };
+};
+
+export type ConnectionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConnectionsQuery = {
+  __typename?: "Query";
+  session: {
+    __typename?: "Session";
+    currentUser: {
+      __typename?: "User";
+      connections: Array<
+        | {
+            __typename?: "PlaidConnection";
+            institution: string;
+            id: string;
+            kind: string;
+            accounts: Array<{
+              __typename?: "PlaidAccount";
+              id: string;
+              name: string;
+              category: string;
+              subcategory: string;
+            }>;
+          }
+        | {
+            __typename?: "SlackConnection";
+            name: string;
+            id: string;
+            kind: string;
+            channels: Array<{
+              __typename?: "SlackChannel";
+              id: string;
+              name: string;
+              topic: string;
+              num_members: number;
+            }>;
+          }
+      >;
+    };
+  };
+};
+
+export type CreatePlaidStartMutationVariables = Exact<{
+  input: CreatePlaidStartInput;
+}>;
+
+export type CreatePlaidStartMutation = {
+  __typename?: "Mutation";
+  createPlaidStart: {
+    __typename?: "PlaidStart";
+    public_token: string;
+    state: string;
+  };
+};
+
+export type CreateSlackStartMutationVariables = Exact<{
+  input: CreateSlackStartInput;
+}>;
+
+export type CreateSlackStartMutation = {
+  __typename?: "Mutation";
+  createSlackStart: { __typename?: "SlackStart"; url: string };
 };
 
 export const TodosDocument = gql`
@@ -327,4 +481,86 @@ export function usePipesQuery(
   options: Omit<Urql.UseQueryArgs<PipesQueryVariables>, "query"> = {}
 ) {
   return Urql.useQuery<PipesQuery>({ query: PipesDocument, ...options });
+}
+export const CreatePipeDocument = gql`
+  mutation CreatePipe($input: CreatePipeInput!) {
+    createPipe(input: $input) {
+      id
+      name
+    }
+  }
+`;
+
+export function useCreatePipeMutation() {
+  return Urql.useMutation<CreatePipeMutation, CreatePipeMutationVariables>(
+    CreatePipeDocument
+  );
+}
+export const ConnectionsDocument = gql`
+  query Connections {
+    session {
+      currentUser {
+        connections {
+          id
+          kind
+          ... on PlaidConnection {
+            institution
+            accounts {
+              id
+              name
+              category
+              subcategory
+            }
+          }
+          ... on SlackConnection {
+            name
+            channels {
+              id
+              name
+              topic
+              num_members
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export function useConnectionsQuery(
+  options: Omit<Urql.UseQueryArgs<ConnectionsQueryVariables>, "query"> = {}
+) {
+  return Urql.useQuery<ConnectionsQuery>({
+    query: ConnectionsDocument,
+    ...options,
+  });
+}
+export const CreatePlaidStartDocument = gql`
+  mutation CreatePlaidStart($input: CreatePlaidStartInput!) {
+    createPlaidStart(input: $input) {
+      public_token
+      state
+    }
+  }
+`;
+
+export function useCreatePlaidStartMutation() {
+  return Urql.useMutation<
+    CreatePlaidStartMutation,
+    CreatePlaidStartMutationVariables
+  >(CreatePlaidStartDocument);
+}
+export const CreateSlackStartDocument = gql`
+  mutation CreateSlackStart($input: CreateSlackStartInput!) {
+    createSlackStart(input: $input) {
+      url
+    }
+  }
+`;
+
+export function useCreateSlackStartMutation() {
+  return Urql.useMutation<
+    CreateSlackStartMutation,
+    CreateSlackStartMutationVariables
+  >(CreateSlackStartDocument);
 }
