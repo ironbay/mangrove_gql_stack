@@ -27,6 +27,10 @@ mutation Upload($name: String!, $type: String!) {
   upload(name: $name, type: $type)
 }
 
+mutation Bingo($name: String!) {
+  yell(name: $name)
+}
+
 query Pipes {
   session {
     currentUser {
