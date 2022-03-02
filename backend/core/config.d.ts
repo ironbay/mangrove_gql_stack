@@ -8,5 +8,7 @@ declare module "@serverless-stack/node" {
     BUCKET: string;
     COGNITO_USER_POOL_ID: string;
     MY_SPECIAL_CONFIG: string;
+    PLAID_CLIENT_ID: string;
+    PLAID_SECRET: string;
   }
 }

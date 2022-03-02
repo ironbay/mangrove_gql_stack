@@ -93,6 +93,7 @@ export type Mutation = {
   createPlaidStart: PlaidStart;
   createSlackStart: SlackStart;
   createTodo: Todo;
+  removePlaid: RemovePlaid;
   removeTodo?: Maybe<Todo>;
   upload: Scalars["String"];
 };
@@ -111,6 +112,10 @@ export type MutationCreateSlackStartArgs = {
 
 export type MutationCreateTodoArgs = {
   input: CreateTodoInput;
+};
+
+export type MutationRemovePlaidArgs = {
+  input: RemovePlaidInput;
 };
 
 export type MutationRemoveTodoArgs = {
@@ -170,6 +175,17 @@ export type Query = {
 
 export type QueryUserArgs = {
   id: Scalars["ID"];
+};
+
+export type RemovePlaid = {
+  __typename?: "RemovePlaid";
+  id: Scalars["ID"];
+  user_id: Scalars["String"];
+};
+
+export type RemovePlaidInput = {
+  id: Scalars["ID"];
+  user_id: Scalars["String"];
 };
 
 export type Session = {
@@ -376,6 +392,15 @@ export type CreatePlaidStartMutation = {
   };
 };
 
+export type RemovePlaidMutationVariables = Exact<{
+  input: RemovePlaidInput;
+}>;
+
+export type RemovePlaidMutation = {
+  __typename?: "Mutation";
+  removePlaid: { __typename?: "RemovePlaid"; id: string; user_id: string };
+};
+
 export type CreateSlackStartMutationVariables = Exact<{
   input: CreateSlackStartInput;
 }>;
@@ -549,6 +574,20 @@ export function useCreatePlaidStartMutation() {
     CreatePlaidStartMutation,
     CreatePlaidStartMutationVariables
   >(CreatePlaidStartDocument);
+}
+export const RemovePlaidDocument = gql`
+  mutation RemovePlaid($input: RemovePlaidInput!) {
+    removePlaid(input: $input) {
+      id
+      user_id
+    }
+  }
+`;
+
+export function useRemovePlaidMutation() {
+  return Urql.useMutation<RemovePlaidMutation, RemovePlaidMutationVariables>(
+    RemovePlaidDocument
+  );
 }
 export const CreateSlackStartDocument = gql`
   mutation CreateSlackStart($input: CreateSlackStartInput!) {

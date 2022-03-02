@@ -12,10 +12,21 @@ interface Connection {
 type Mutation {
   createPlaidStart(input: CreatePlaidStartInput!): PlaidStart!
   createSlackStart(input: CreateSlackStartInput!): SlackStart!
+  removePlaid(input: RemovePlaidInput!): RemovePlaid!
 }
 
 input CreatePlaidStartInput {
   user: String!
+}
+
+type RemovePlaid {
+  id: ID!
+  user_id: String!
+}
+
+input RemovePlaidInput {
+  id: ID!
+  user_id: String!
 }
 
 type PlaidStart {

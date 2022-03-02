@@ -103,6 +103,13 @@ mutation CreatePlaidStart($input: CreatePlaidStartInput!) {
   }
 }
 
+mutation RemovePlaid($input: RemovePlaidInput!) {
+  removePlaid(input: $input) {
+    id
+    user_id
+  }
+}
+
 mutation CreateSlackStart($input: CreateSlackStartInput!) {
   createSlackStart(input: $input) {
     url
