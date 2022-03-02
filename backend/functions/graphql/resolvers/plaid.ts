@@ -3,18 +3,19 @@ import { Connection } from "@mangrove/backend/core/connection";
 
 export const PlaidResolver: Resolvers = {
   Mutation: {
-    createPlaidStart: (parent, args, ctx) => {
-      const user = args.input.user;
+    createPlaidStart: async (parent, args, ctx) => {
+      const token = await Connection.Plaid.start();
+
       return {
-        public_token: "public_token123",
-        state: `user state: ${Connection.Plaid.name()}`,
+        public_token: token,
+        state: `user state: alan`,
       };
     },
     removePlaid: (parnet, args, ctx) => {
       const user = args.input.user_id;
       return {
         id: "id123",
-        user_id: Connection.Plaid.name(),
+        user_id: "123",
       };
     },
   },
