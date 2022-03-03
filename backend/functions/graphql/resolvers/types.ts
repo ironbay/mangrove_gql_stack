@@ -50,10 +50,6 @@ export type CreatePipeInput = {
   sources: Array<CreateSourceInput>;
 };
 
-export type CreatePlaidStartInput = {
-  user: Scalars["String"];
-};
-
 export type CreateSlackStartInput = {
   user: Scalars["String"];
 };
@@ -93,9 +89,10 @@ export type Flags = {
 export type Mutation = {
   __typename?: "Mutation";
   createPipe: Pipe;
-  createPlaidStart: PlaidStart;
   createSlackStart: SlackStart;
   createTodo: Todo;
+  plaidFinish: PlaidFinish;
+  plaidStart: PlaidStart;
   removePlaid: RemovePlaid;
   removeTodo?: Maybe<Todo>;
   upload: Scalars["String"];
@@ -105,16 +102,20 @@ export type MutationCreatePipeArgs = {
   input: CreatePipeInput;
 };
 
-export type MutationCreatePlaidStartArgs = {
-  input: CreatePlaidStartInput;
-};
-
 export type MutationCreateSlackStartArgs = {
   input: CreateSlackStartInput;
 };
 
 export type MutationCreateTodoArgs = {
   input: CreateTodoInput;
+};
+
+export type MutationPlaidFinishArgs = {
+  input: PlaidFinishInput;
+};
+
+export type MutationPlaidStartArgs = {
+  input: PlaidStartInput;
 };
 
 export type MutationRemovePlaidArgs = {
@@ -163,10 +164,24 @@ export type PlaidConnection = Connection & {
   kind: Scalars["String"];
 };
 
+export type PlaidFinish = {
+  __typename?: "PlaidFinish";
+  item_id: Scalars["String"];
+};
+
+export type PlaidFinishInput = {
+  public_token: Scalars["String"];
+  user: Scalars["String"];
+};
+
 export type PlaidStart = {
   __typename?: "PlaidStart";
-  public_token: Scalars["String"];
+  link_token: Scalars["String"];
   state: Scalars["String"];
+};
+
+export type PlaidStartInput = {
+  user: Scalars["String"];
 };
 
 export type Query = {
@@ -365,9 +380,6 @@ export type ResolversTypes = ResolversObject<{
   CreateFlagInput: ResolverTypeWrapper<DeepPartial<CreateFlagInput>>;
   CreateNumberFilter: ResolverTypeWrapper<DeepPartial<CreateNumberFilter>>;
   CreatePipeInput: ResolverTypeWrapper<DeepPartial<CreatePipeInput>>;
-  CreatePlaidStartInput: ResolverTypeWrapper<
-    DeepPartial<CreatePlaidStartInput>
-  >;
   CreateSlackStartInput: ResolverTypeWrapper<
     DeepPartial<CreateSlackStartInput>
   >;
@@ -384,7 +396,10 @@ export type ResolversTypes = ResolversObject<{
   Pipe: ResolverTypeWrapper<DeepPartial<Pipe>>;
   PlaidAccount: ResolverTypeWrapper<DeepPartial<PlaidAccount>>;
   PlaidConnection: ResolverTypeWrapper<DeepPartial<PlaidConnection>>;
+  PlaidFinish: ResolverTypeWrapper<DeepPartial<PlaidFinish>>;
+  PlaidFinishInput: ResolverTypeWrapper<DeepPartial<PlaidFinishInput>>;
   PlaidStart: ResolverTypeWrapper<DeepPartial<PlaidStart>>;
+  PlaidStartInput: ResolverTypeWrapper<DeepPartial<PlaidStartInput>>;
   Query: ResolverTypeWrapper<{}>;
   RemovePlaid: ResolverTypeWrapper<DeepPartial<RemovePlaid>>;
   RemovePlaidInput: ResolverTypeWrapper<DeepPartial<RemovePlaidInput>>;
@@ -409,7 +424,6 @@ export type ResolversParentTypes = ResolversObject<{
   CreateFlagInput: DeepPartial<CreateFlagInput>;
   CreateNumberFilter: DeepPartial<CreateNumberFilter>;
   CreatePipeInput: DeepPartial<CreatePipeInput>;
-  CreatePlaidStartInput: DeepPartial<CreatePlaidStartInput>;
   CreateSlackStartInput: DeepPartial<CreateSlackStartInput>;
   CreateSourceInput: DeepPartial<CreateSourceInput>;
   CreateTextFilter: DeepPartial<CreateTextFilter>;
@@ -426,7 +440,10 @@ export type ResolversParentTypes = ResolversObject<{
   Pipe: DeepPartial<Pipe>;
   PlaidAccount: DeepPartial<PlaidAccount>;
   PlaidConnection: DeepPartial<PlaidConnection>;
+  PlaidFinish: DeepPartial<PlaidFinish>;
+  PlaidFinishInput: DeepPartial<PlaidFinishInput>;
   PlaidStart: DeepPartial<PlaidStart>;
+  PlaidStartInput: DeepPartial<PlaidStartInput>;
   Query: {};
   RemovePlaid: DeepPartial<RemovePlaid>;
   RemovePlaidInput: DeepPartial<RemovePlaidInput>;
@@ -494,12 +511,6 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreatePipeArgs, "input">
   >;
-  createPlaidStart?: Resolver<
-    ResolversTypes["PlaidStart"],
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreatePlaidStartArgs, "input">
-  >;
   createSlackStart?: Resolver<
     ResolversTypes["SlackStart"],
     ParentType,
@@ -511,6 +522,18 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationCreateTodoArgs, "input">
+  >;
+  plaidFinish?: Resolver<
+    ResolversTypes["PlaidFinish"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationPlaidFinishArgs, "input">
+  >;
+  plaidStart?: Resolver<
+    ResolversTypes["PlaidStart"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationPlaidStartArgs, "input">
   >;
   removePlaid?: Resolver<
     ResolversTypes["RemovePlaid"],
@@ -585,11 +608,19 @@ export type PlaidConnectionResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type PlaidFinishResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes["PlaidFinish"] = ResolversParentTypes["PlaidFinish"]
+> = ResolversObject<{
+  item_id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type PlaidStartResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes["PlaidStart"] = ResolversParentTypes["PlaidStart"]
 > = ResolversObject<{
-  public_token?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  link_token?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   state?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -715,6 +746,7 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Pipe?: PipeResolvers<ContextType>;
   PlaidAccount?: PlaidAccountResolvers<ContextType>;
   PlaidConnection?: PlaidConnectionResolvers<ContextType>;
+  PlaidFinish?: PlaidFinishResolvers<ContextType>;
   PlaidStart?: PlaidStartResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RemovePlaid?: RemovePlaidResolvers<ContextType>;

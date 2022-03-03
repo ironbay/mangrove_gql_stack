@@ -19,25 +19,24 @@ const plaid_config = new PlaidConfig({
 
 const api = new PlaidApi(plaid_config);
 
-export async function start() {
-  const token = api
-    .linkTokenCreate({
-      language: "en",
-      client_name: "mangrove",
-      country_codes: [PlaidCountryCodes.Us],
-      user: {
-        client_user_id: "usralanrice",
-      },
-      products: [PlaidProducts.Transactions],
-    })
-    .then((resp) => {
-      console.log(resp);
-      return resp.data.link_token;
-    })
-    .catch((e) => {
-      console.log(e);
-      return e;
-    });
+export async function start(user: string) {
+  const resp = await api.linkTokenCreate({
+    language: "en",
+    client_name: "mangrove",
+    country_codes: [PlaidCountryCodes.Us],
+    user: {
+      client_user_id: user,
+    },
+    products: [PlaidProducts.Transactions],
+  });
 
-  return token;
+  return resp.data.link_token;
+}
+
+export async function finish(user: string, public_token: string) {
+  const resp = await api.itemPublicTokenExchange({ public_token });
+
+  //   save access token and conn to db
+
+  return resp.data.item_id;
 }

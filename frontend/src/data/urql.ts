@@ -47,10 +47,6 @@ export type CreatePipeInput = {
   sources: Array<CreateSourceInput>;
 };
 
-export type CreatePlaidStartInput = {
-  user: Scalars["String"];
-};
-
 export type CreateSlackStartInput = {
   user: Scalars["String"];
 };
@@ -90,9 +86,10 @@ export type Flags = {
 export type Mutation = {
   __typename?: "Mutation";
   createPipe: Pipe;
-  createPlaidStart: PlaidStart;
   createSlackStart: SlackStart;
   createTodo: Todo;
+  plaidFinish: PlaidFinish;
+  plaidStart: PlaidStart;
   removePlaid: RemovePlaid;
   removeTodo?: Maybe<Todo>;
   upload: Scalars["String"];
@@ -102,16 +99,20 @@ export type MutationCreatePipeArgs = {
   input: CreatePipeInput;
 };
 
-export type MutationCreatePlaidStartArgs = {
-  input: CreatePlaidStartInput;
-};
-
 export type MutationCreateSlackStartArgs = {
   input: CreateSlackStartInput;
 };
 
 export type MutationCreateTodoArgs = {
   input: CreateTodoInput;
+};
+
+export type MutationPlaidFinishArgs = {
+  input: PlaidFinishInput;
+};
+
+export type MutationPlaidStartArgs = {
+  input: PlaidStartInput;
 };
 
 export type MutationRemovePlaidArgs = {
@@ -160,10 +161,24 @@ export type PlaidConnection = Connection & {
   kind: Scalars["String"];
 };
 
+export type PlaidFinish = {
+  __typename?: "PlaidFinish";
+  item_id: Scalars["String"];
+};
+
+export type PlaidFinishInput = {
+  public_token: Scalars["String"];
+  user: Scalars["String"];
+};
+
 export type PlaidStart = {
   __typename?: "PlaidStart";
-  public_token: Scalars["String"];
+  link_token: Scalars["String"];
   state: Scalars["String"];
+};
+
+export type PlaidStartInput = {
+  user: Scalars["String"];
 };
 
 export type Query = {
@@ -379,17 +394,22 @@ export type ConnectionsQuery = {
   };
 };
 
-export type CreatePlaidStartMutationVariables = Exact<{
-  input: CreatePlaidStartInput;
+export type PlaidStartMutationVariables = Exact<{
+  input: PlaidStartInput;
 }>;
 
-export type CreatePlaidStartMutation = {
+export type PlaidStartMutation = {
   __typename?: "Mutation";
-  createPlaidStart: {
-    __typename?: "PlaidStart";
-    public_token: string;
-    state: string;
-  };
+  plaidStart: { __typename?: "PlaidStart"; link_token: string; state: string };
+};
+
+export type PlaidFinishMutationVariables = Exact<{
+  input: PlaidFinishInput;
+}>;
+
+export type PlaidFinishMutation = {
+  __typename?: "Mutation";
+  plaidFinish: { __typename?: "PlaidFinish"; item_id: string };
 };
 
 export type RemovePlaidMutationVariables = Exact<{
@@ -560,20 +580,32 @@ export function useConnectionsQuery(
     ...options,
   });
 }
-export const CreatePlaidStartDocument = gql`
-  mutation CreatePlaidStart($input: CreatePlaidStartInput!) {
-    createPlaidStart(input: $input) {
-      public_token
+export const PlaidStartDocument = gql`
+  mutation PlaidStart($input: PlaidStartInput!) {
+    plaidStart(input: $input) {
+      link_token
       state
     }
   }
 `;
 
-export function useCreatePlaidStartMutation() {
-  return Urql.useMutation<
-    CreatePlaidStartMutation,
-    CreatePlaidStartMutationVariables
-  >(CreatePlaidStartDocument);
+export function usePlaidStartMutation() {
+  return Urql.useMutation<PlaidStartMutation, PlaidStartMutationVariables>(
+    PlaidStartDocument
+  );
+}
+export const PlaidFinishDocument = gql`
+  mutation PlaidFinish($input: PlaidFinishInput!) {
+    plaidFinish(input: $input) {
+      item_id
+    }
+  }
+`;
+
+export function usePlaidFinishMutation() {
+  return Urql.useMutation<PlaidFinishMutation, PlaidFinishMutationVariables>(
+    PlaidFinishDocument
+  );
 }
 export const RemovePlaidDocument = gql`
   mutation RemovePlaid($input: RemovePlaidInput!) {

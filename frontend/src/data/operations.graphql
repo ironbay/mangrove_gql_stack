@@ -96,10 +96,16 @@ query Connections {
   }
 }
 
-mutation CreatePlaidStart($input: CreatePlaidStartInput!) {
-  createPlaidStart(input: $input) {
-    public_token
+mutation PlaidStart($input: PlaidStartInput!) {
+  plaidStart(input: $input) {
+    link_token
     state
+  }
+}
+
+mutation PlaidFinish($input: PlaidFinishInput!) {
+  plaidFinish(input: $input) {
+    item_id
   }
 }
 
