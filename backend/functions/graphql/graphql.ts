@@ -1,7 +1,9 @@
-import { typeDefs } from "./schema";
+// import { typeDefs } from "./schema";
 import { useContext, Context } from "@mangrove/core";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 
+import { typeDefs } from "./schema";
+import { PlaidResolver } from "./resolvers/plaid";
 import { TodoResolver } from "./resolvers/todo";
 import { UserResolver } from "./resolvers/user";
 import { SessionResolver } from "./resolvers/session";
@@ -19,6 +21,7 @@ const verifier = CognitoJwtVerifier.create({
 export const handler = createGQLHandler<Context>({
   typeDefs,
   resolvers: [
+    PlaidResolver,
     TodoResolver,
     UserResolver,
     SessionResolver,

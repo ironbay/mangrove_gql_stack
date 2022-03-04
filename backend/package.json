@@ -9,7 +9,8 @@
     "aws-sdk": "^2.1058.0",
     "dynamodb-onetable": "^2.3.2",
     "kysely": "^0.16.6",
-    "kysely-data-api": "^0.0.9"
+    "kysely-data-api": "^0.0.9",
+    "plaid": "^10.0.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.89",

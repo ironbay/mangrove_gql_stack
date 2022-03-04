@@ -96,10 +96,23 @@ query Connections {
   }
 }
 
-mutation CreatePlaidStart($input: CreatePlaidStartInput!) {
-  createPlaidStart(input: $input) {
-    public_token
+mutation StartPlaidAuth($input: StartPlaidAuthInput!) {
+  startPlaidAuth(input: $input) {
+    link_token
     state
+  }
+}
+
+mutation FinishPlaidAuth($input: FinishPlaidAuthInput!) {
+  finishPlaidAuth(input: $input) {
+    item_id
+  }
+}
+
+mutation RemovePlaidConnection($input: RemovePlaidConnectionInput!) {
+  removePlaidConnection(input: $input) {
+    id
+    user_id
   }
 }
 
