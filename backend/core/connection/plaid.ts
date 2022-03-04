@@ -65,3 +65,16 @@ export async function finish_auth(user: string, public_token: string) {
   return "ok";
   //   return resp.data.item_id;
 }
+
+export async function remove_connection(user: string, id: string) {
+  await PlaidConnection.remove({ user, id });
+
+  // remove from plaid
+  //   const removed_plaid = await api.itemAccessTokenInvalidate({
+  //     access_token: "tok123",
+  //   });
+
+  console.log(removed);
+
+  return "ok";
+}

@@ -102,7 +102,7 @@ export type Mutation = {
   createSlackStart: SlackStart;
   createTodo: Todo;
   finishPlaidAuth: FinishPlaidAuth;
-  removePlaid: RemovePlaid;
+  removePlaidConnection: RemovePlaidConnection;
   removeTodo?: Maybe<Todo>;
   startPlaidAuth: StartPlaidAuth;
   upload: Scalars["String"];
@@ -124,8 +124,8 @@ export type MutationFinishPlaidAuthArgs = {
   input: FinishPlaidAuthInput;
 };
 
-export type MutationRemovePlaidArgs = {
-  input: RemovePlaidInput;
+export type MutationRemovePlaidConnectionArgs = {
+  input: RemovePlaidConnectionInput;
 };
 
 export type MutationRemoveTodoArgs = {
@@ -185,13 +185,13 @@ export type QueryUserArgs = {
   id: Scalars["ID"];
 };
 
-export type RemovePlaid = {
-  __typename?: "RemovePlaid";
+export type RemovePlaidConnection = {
+  __typename?: "RemovePlaidConnection";
   id: Scalars["ID"];
   user_id: Scalars["String"];
 };
 
-export type RemovePlaidInput = {
+export type RemovePlaidConnectionInput = {
   id: Scalars["ID"];
   user_id: Scalars["String"];
 };
@@ -399,8 +399,12 @@ export type ResolversTypes = ResolversObject<{
   PlaidAccount: ResolverTypeWrapper<DeepPartial<PlaidAccount>>;
   PlaidConnection: ResolverTypeWrapper<DeepPartial<PlaidConnection>>;
   Query: ResolverTypeWrapper<{}>;
-  RemovePlaid: ResolverTypeWrapper<DeepPartial<RemovePlaid>>;
-  RemovePlaidInput: ResolverTypeWrapper<DeepPartial<RemovePlaidInput>>;
+  RemovePlaidConnection: ResolverTypeWrapper<
+    DeepPartial<RemovePlaidConnection>
+  >;
+  RemovePlaidConnectionInput: ResolverTypeWrapper<
+    DeepPartial<RemovePlaidConnectionInput>
+  >;
   Session: ResolverTypeWrapper<DeepPartial<Session>>;
   SlackChannel: ResolverTypeWrapper<DeepPartial<SlackChannel>>;
   SlackConnection: ResolverTypeWrapper<DeepPartial<SlackConnection>>;
@@ -443,8 +447,8 @@ export type ResolversParentTypes = ResolversObject<{
   PlaidAccount: DeepPartial<PlaidAccount>;
   PlaidConnection: DeepPartial<PlaidConnection>;
   Query: {};
-  RemovePlaid: DeepPartial<RemovePlaid>;
-  RemovePlaidInput: DeepPartial<RemovePlaidInput>;
+  RemovePlaidConnection: DeepPartial<RemovePlaidConnection>;
+  RemovePlaidConnectionInput: DeepPartial<RemovePlaidConnectionInput>;
   Session: DeepPartial<Session>;
   SlackChannel: DeepPartial<SlackChannel>;
   SlackConnection: DeepPartial<SlackConnection>;
@@ -537,11 +541,11 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationFinishPlaidAuthArgs, "input">
   >;
-  removePlaid?: Resolver<
-    ResolversTypes["RemovePlaid"],
+  removePlaidConnection?: Resolver<
+    ResolversTypes["RemovePlaidConnection"],
     ParentType,
     ContextType,
-    RequireFields<MutationRemovePlaidArgs, "input">
+    RequireFields<MutationRemovePlaidConnectionArgs, "input">
   >;
   removeTodo?: Resolver<
     Maybe<ResolversTypes["Todo"]>,
@@ -630,9 +634,9 @@ export type QueryResolvers<
   >;
 }>;
 
-export type RemovePlaidResolvers<
+export type RemovePlaidConnectionResolvers<
   ContextType = Context,
-  ParentType extends ResolversParentTypes["RemovePlaid"] = ResolversParentTypes["RemovePlaid"]
+  ParentType extends ResolversParentTypes["RemovePlaidConnection"] = ResolversParentTypes["RemovePlaidConnection"]
 > = ResolversObject<{
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   user_id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
@@ -748,7 +752,7 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   PlaidAccount?: PlaidAccountResolvers<ContextType>;
   PlaidConnection?: PlaidConnectionResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  RemovePlaid?: RemovePlaidResolvers<ContextType>;
+  RemovePlaidConnection?: RemovePlaidConnectionResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;
   SlackChannel?: SlackChannelResolvers<ContextType>;
   SlackConnection?: SlackConnectionResolvers<ContextType>;

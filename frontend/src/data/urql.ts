@@ -99,7 +99,7 @@ export type Mutation = {
   createSlackStart: SlackStart;
   createTodo: Todo;
   finishPlaidAuth: FinishPlaidAuth;
-  removePlaid: RemovePlaid;
+  removePlaidConnection: RemovePlaidConnection;
   removeTodo?: Maybe<Todo>;
   startPlaidAuth: StartPlaidAuth;
   upload: Scalars["String"];
@@ -121,8 +121,8 @@ export type MutationFinishPlaidAuthArgs = {
   input: FinishPlaidAuthInput;
 };
 
-export type MutationRemovePlaidArgs = {
-  input: RemovePlaidInput;
+export type MutationRemovePlaidConnectionArgs = {
+  input: RemovePlaidConnectionInput;
 };
 
 export type MutationRemoveTodoArgs = {
@@ -182,13 +182,13 @@ export type QueryUserArgs = {
   id: Scalars["ID"];
 };
 
-export type RemovePlaid = {
-  __typename?: "RemovePlaid";
+export type RemovePlaidConnection = {
+  __typename?: "RemovePlaidConnection";
   id: Scalars["ID"];
   user_id: Scalars["String"];
 };
 
-export type RemovePlaidInput = {
+export type RemovePlaidConnectionInput = {
   id: Scalars["ID"];
   user_id: Scalars["String"];
 };
@@ -416,13 +416,17 @@ export type FinishPlaidAuthMutation = {
   finishPlaidAuth: { __typename?: "FinishPlaidAuth"; item_id: string };
 };
 
-export type RemovePlaidMutationVariables = Exact<{
-  input: RemovePlaidInput;
+export type RemovePlaidConnectionMutationVariables = Exact<{
+  input: RemovePlaidConnectionInput;
 }>;
 
-export type RemovePlaidMutation = {
+export type RemovePlaidConnectionMutation = {
   __typename?: "Mutation";
-  removePlaid: { __typename?: "RemovePlaid"; id: string; user_id: string };
+  removePlaidConnection: {
+    __typename?: "RemovePlaidConnection";
+    id: string;
+    user_id: string;
+  };
 };
 
 export type CreateSlackStartMutationVariables = Exact<{
@@ -600,7 +604,7 @@ export function useStartPlaidAuthMutation() {
   >(StartPlaidAuthDocument);
 }
 export const FinishPlaidAuthDocument = gql`
-  mutation finishPlaidAuth($input: FinishPlaidAuthInput!) {
+  mutation FinishPlaidAuth($input: FinishPlaidAuthInput!) {
     finishPlaidAuth(input: $input) {
       item_id
     }
@@ -613,19 +617,20 @@ export function useFinishPlaidAuthMutation() {
     FinishPlaidAuthMutationVariables
   >(FinishPlaidAuthDocument);
 }
-export const RemovePlaidDocument = gql`
-  mutation RemovePlaid($input: RemovePlaidInput!) {
-    removePlaid(input: $input) {
+export const RemovePlaidConnectionDocument = gql`
+  mutation RemovePlaidConnection($input: RemovePlaidConnectionInput!) {
+    removePlaidConnection(input: $input) {
       id
       user_id
     }
   }
 `;
 
-export function useRemovePlaidMutation() {
-  return Urql.useMutation<RemovePlaidMutation, RemovePlaidMutationVariables>(
-    RemovePlaidDocument
-  );
+export function useRemovePlaidConnectionMutation() {
+  return Urql.useMutation<
+    RemovePlaidConnectionMutation,
+    RemovePlaidConnectionMutationVariables
+  >(RemovePlaidConnectionDocument);
 }
 export const CreateSlackStartDocument = gql`
   mutation CreateSlackStart($input: CreateSlackStartInput!) {

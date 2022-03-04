@@ -103,7 +103,7 @@ mutation StartPlaidAuth($input: StartPlaidAuthInput!) {
   }
 }
 
-mutation finishPlaidAuth($input: FinishPlaidAuthInput!) {
+mutation FinishPlaidAuth($input: FinishPlaidAuthInput!) {
   finishPlaidAuth(input: $input) {
     item_id
   }

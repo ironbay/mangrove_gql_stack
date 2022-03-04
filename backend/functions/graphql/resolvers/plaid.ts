@@ -21,5 +21,16 @@ export const PlaidResolver: Resolvers = {
         item_id,
       };
     },
+    removePlaidConnection: async (parent, args, ctx) => {
+      await Connection.Plaid.remove_connection(
+        args.input.user_id,
+        args.input.id
+      );
+
+      return {
+        user_id: args.input.user_id,
+        id: args.input.id,
+      };
+    },
   },
 };
