@@ -15,6 +15,7 @@ export default async function main(app: sst.App) {
   if (app.local) app.setDefaultRemovalPolicy(RemovalPolicy.DESTROY);
 
   const dynamo = new Dynamo(app);
+
   const db = new Database(app);
   const auth = new Auth(app);
   const api = new Api(app, {
@@ -22,6 +23,7 @@ export default async function main(app: sst.App) {
     db: db.outputs,
     auth: auth.outputs,
   });
+
   new Frontend(app, {
     api: api.outputs,
     auth: auth.outputs,

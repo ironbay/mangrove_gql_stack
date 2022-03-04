@@ -1,4 +1,6 @@
 import { Config } from "@serverless-stack/node";
+import { Entity, Model, Table } from "dynamodb-onetable";
+
 import {
   Configuration as PlaidConfig,
   PlaidApi,
@@ -6,6 +8,9 @@ import {
   CountryCode as PlaidCountryCodes,
   Products as PlaidProducts,
 } from "plaid";
+
+import { Dynamo } from "@mangrove/backend/core/dynamo";
+import { SchemaMetaFieldDef } from "graphql";
 
 const plaid_config = new PlaidConfig({
   basePath: PlaidEnvironments.development,
@@ -18,6 +23,11 @@ const plaid_config = new PlaidConfig({
 });
 
 const api = new PlaidApi(plaid_config);
+
+type PlaidConnection = Entity<typeof Dynamo.Schema.models.PlaidConnection>;
+
+const PlaidConnection =
+  Dynamo.Table.getModel<PlaidConnection>("PlaidConnection");
 
 export async function start(user: string) {
   const resp = await api.linkTokenCreate({
@@ -34,9 +44,24 @@ export async function start(user: string) {
 }
 
 export async function finish(user: string, public_token: string) {
-  const resp = await api.itemPublicTokenExchange({ public_token });
+  //   const resp = await api.itemPublicTokenExchange({ public_token });
+  // const { access_token, item_id } = resp.data;
+  const { access_token, item_id } = {
+    access_token: "acc123",
+    item_id: "item123",
+  };
 
-  //   save access token and conn to db
+  const conn: PlaidConnection = {
+    type: "plaid_connection",
+    id: item_id,
+    user: user,
+    token: access_token,
+  };
 
-  return resp.data.item_id;
+  const created = await PlaidConnection.create(conn);
+
+  console.log(created);
+
+  return "ok";
+  //   return resp.data.item_id;
 }

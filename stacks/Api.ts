@@ -44,8 +44,7 @@ export class Api extends sst.Stack {
       graphql.serverFunction
     );
 
-    const api = new sst.Api(this, "APi", {});
-    api.attachPermissions([props.dynamo.table]);
+    graphql.serverFunction.attachPermissions([props.dynamo.table]);
 
     Parameter.use(
       graphql.serverFunction,

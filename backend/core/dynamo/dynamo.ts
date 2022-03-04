@@ -1,8 +1,8 @@
-import { Table } from "dynamodb-onetable";
+import { Table as OneTable } from "dynamodb-onetable";
 import { Config } from "@serverless-stack/node";
 import DynamoDB from "aws-sdk/clients/dynamodb";
 
-const schema = {
+export const Schema = {
   format: "onetable:1.1.0",
   version: "0.0.1",
   indexes: {
@@ -61,23 +61,21 @@ const schema = {
       value: { type: String },
       op: { type: String },
     },
-    Connection: {
-      type: { type: String },
-      pk: { type: String, value: "user#${user_id}" },
-      sk: { type: String, value: "connection#${id}" },
-      id: { type: String },
-      token: { type: String },
+    PlaidConnection: {
+      type: { type: String, required: true },
+      pk: { type: String, value: "user#${user}" },
+      sk: { type: String, value: "connection#plaid#${id}" },
+      id: { type: String, required: true },
+      user: { type: String, required: true },
+      token: { type: String, required: true },
     },
   },
-};
+} as const;
 
 const client = new DynamoDB.DocumentClient({});
-const table = new Table({
+
+export const Table = new OneTable({
   client,
   name: Config.DYNAMO_TABLE,
-  schema,
+  schema: Schema,
 });
-
-export default {
-  Table: table,
-};
