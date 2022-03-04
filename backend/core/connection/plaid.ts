@@ -29,7 +29,7 @@ type PlaidConnection = Entity<typeof Dynamo.Schema.models.PlaidConnection>;
 const PlaidConnection =
   Dynamo.Table.getModel<PlaidConnection>("PlaidConnection");
 
-export async function start(user: string) {
+export async function start_auth(user: string) {
   const resp = await api.linkTokenCreate({
     language: "en",
     client_name: "mangrove",
@@ -43,7 +43,7 @@ export async function start(user: string) {
   return resp.data.link_token;
 }
 
-export async function finish(user: string, public_token: string) {
+export async function finish_auth(user: string, public_token: string) {
   //   const resp = await api.itemPublicTokenExchange({ public_token });
   // const { access_token, item_id } = resp.data;
   const { access_token, item_id } = {

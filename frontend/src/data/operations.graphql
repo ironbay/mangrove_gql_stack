@@ -96,21 +96,21 @@ query Connections {
   }
 }
 
-mutation plaidAuthStart($input: PlaidAuthStartInput!) {
-  plaidAuthStart(input: $input) {
+mutation StartPlaidAuth($input: StartPlaidAuthInput!) {
+  startPlaidAuth(input: $input) {
     link_token
     state
   }
 }
 
-mutation plaidAuthFinish($input: PlaidAuthFinishInput!) {
-  plaidAuthFinish(input: $input) {
+mutation finishPlaidAuth($input: FinishPlaidAuthInput!) {
+  finishPlaidAuth(input: $input) {
     item_id
   }
 }
 
-mutation RemovePlaid($input: RemovePlaidInput!) {
-  removePlaid(input: $input) {
+mutation RemovePlaidConnection($input: RemovePlaidConnectionInput!) {
+  removePlaidConnection(input: $input) {
     id
     user_id
   }

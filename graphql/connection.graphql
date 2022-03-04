@@ -10,36 +10,38 @@ interface Connection {
 }
 
 type Mutation {
-  plaidAuthStart(input: PlaidAuthStartInput!): PlaidAuthStart!
-  plaidAuthFinish(input: PlaidAuthFinishInput!): PlaidAuthFinish!
-  removePlaid(input: RemovePlaidInput!): RemovePlaid!
+  startPlaidAuth(input: StartPlaidAuthInput!): StartPlaidAuth!
+  finishPlaidAuth(input: FinishPlaidAuthInput!): FinishPlaidAuth!
+  removePlaidConnection(
+    input: RemovePlaidConnectionInput!
+  ): RemovePlaidConnection!
   createSlackStart(input: CreateSlackStartInput!): SlackStart!
 }
 
-input PlaidAuthStartInput {
+input StartPlaidAuthInput {
   user: String!
 }
 
-type PlaidAuthStart {
+type StartPlaidAuth {
   link_token: String!
   state: String!
 }
 
-input PlaidAuthFinishInput {
+input FinishPlaidAuthInput {
   user: String!
   public_token: String!
 }
 
-type PlaidAuthFinish {
+type FinishPlaidAuth {
   item_id: String!
 }
 
-type RemovePlaid {
+type RemovePlaidConnection {
   id: ID!
   user_id: String!
 }
 
-input RemovePlaidInput {
+input RemovePlaidConnectionInput {
   id: ID!
   user_id: String!
 }
