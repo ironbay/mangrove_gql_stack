@@ -91,8 +91,8 @@ export type Mutation = {
   createPipe: Pipe;
   createSlackStart: SlackStart;
   createTodo: Todo;
-  plaidFinish: PlaidFinish;
-  plaidStart: PlaidStart;
+  plaidAuthFinish: PlaidAuthFinish;
+  plaidAuthStart: PlaidAuthStart;
   removePlaid: RemovePlaid;
   removeTodo?: Maybe<Todo>;
   upload: Scalars["String"];
@@ -110,12 +110,12 @@ export type MutationCreateTodoArgs = {
   input: CreateTodoInput;
 };
 
-export type MutationPlaidFinishArgs = {
-  input: PlaidFinishInput;
+export type MutationPlaidAuthFinishArgs = {
+  input: PlaidAuthFinishInput;
 };
 
-export type MutationPlaidStartArgs = {
-  input: PlaidStartInput;
+export type MutationPlaidAuthStartArgs = {
+  input: PlaidAuthStartInput;
 };
 
 export type MutationRemovePlaidArgs = {
@@ -156,32 +156,32 @@ export type PlaidAccount = {
   subcategory: Scalars["String"];
 };
 
+export type PlaidAuthFinish = {
+  __typename?: "PlaidAuthFinish";
+  item_id: Scalars["String"];
+};
+
+export type PlaidAuthFinishInput = {
+  public_token: Scalars["String"];
+  user: Scalars["String"];
+};
+
+export type PlaidAuthStart = {
+  __typename?: "PlaidAuthStart";
+  link_token: Scalars["String"];
+  state: Scalars["String"];
+};
+
+export type PlaidAuthStartInput = {
+  user: Scalars["String"];
+};
+
 export type PlaidConnection = Connection & {
   __typename?: "PlaidConnection";
   accounts: Array<PlaidAccount>;
   id: Scalars["ID"];
   institution: Scalars["String"];
   kind: Scalars["String"];
-};
-
-export type PlaidFinish = {
-  __typename?: "PlaidFinish";
-  item_id: Scalars["String"];
-};
-
-export type PlaidFinishInput = {
-  public_token: Scalars["String"];
-  user: Scalars["String"];
-};
-
-export type PlaidStart = {
-  __typename?: "PlaidStart";
-  link_token: Scalars["String"];
-  state: Scalars["String"];
-};
-
-export type PlaidStartInput = {
-  user: Scalars["String"];
 };
 
 export type Query = {
@@ -395,11 +395,11 @@ export type ResolversTypes = ResolversObject<{
   NumberFilter: ResolverTypeWrapper<DeepPartial<NumberFilter>>;
   Pipe: ResolverTypeWrapper<DeepPartial<Pipe>>;
   PlaidAccount: ResolverTypeWrapper<DeepPartial<PlaidAccount>>;
+  PlaidAuthFinish: ResolverTypeWrapper<DeepPartial<PlaidAuthFinish>>;
+  PlaidAuthFinishInput: ResolverTypeWrapper<DeepPartial<PlaidAuthFinishInput>>;
+  PlaidAuthStart: ResolverTypeWrapper<DeepPartial<PlaidAuthStart>>;
+  PlaidAuthStartInput: ResolverTypeWrapper<DeepPartial<PlaidAuthStartInput>>;
   PlaidConnection: ResolverTypeWrapper<DeepPartial<PlaidConnection>>;
-  PlaidFinish: ResolverTypeWrapper<DeepPartial<PlaidFinish>>;
-  PlaidFinishInput: ResolverTypeWrapper<DeepPartial<PlaidFinishInput>>;
-  PlaidStart: ResolverTypeWrapper<DeepPartial<PlaidStart>>;
-  PlaidStartInput: ResolverTypeWrapper<DeepPartial<PlaidStartInput>>;
   Query: ResolverTypeWrapper<{}>;
   RemovePlaid: ResolverTypeWrapper<DeepPartial<RemovePlaid>>;
   RemovePlaidInput: ResolverTypeWrapper<DeepPartial<RemovePlaidInput>>;
@@ -439,11 +439,11 @@ export type ResolversParentTypes = ResolversObject<{
   NumberFilter: DeepPartial<NumberFilter>;
   Pipe: DeepPartial<Pipe>;
   PlaidAccount: DeepPartial<PlaidAccount>;
+  PlaidAuthFinish: DeepPartial<PlaidAuthFinish>;
+  PlaidAuthFinishInput: DeepPartial<PlaidAuthFinishInput>;
+  PlaidAuthStart: DeepPartial<PlaidAuthStart>;
+  PlaidAuthStartInput: DeepPartial<PlaidAuthStartInput>;
   PlaidConnection: DeepPartial<PlaidConnection>;
-  PlaidFinish: DeepPartial<PlaidFinish>;
-  PlaidFinishInput: DeepPartial<PlaidFinishInput>;
-  PlaidStart: DeepPartial<PlaidStart>;
-  PlaidStartInput: DeepPartial<PlaidStartInput>;
   Query: {};
   RemovePlaid: DeepPartial<RemovePlaid>;
   RemovePlaidInput: DeepPartial<RemovePlaidInput>;
@@ -523,17 +523,17 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreateTodoArgs, "input">
   >;
-  plaidFinish?: Resolver<
-    ResolversTypes["PlaidFinish"],
+  plaidAuthFinish?: Resolver<
+    ResolversTypes["PlaidAuthFinish"],
     ParentType,
     ContextType,
-    RequireFields<MutationPlaidFinishArgs, "input">
+    RequireFields<MutationPlaidAuthFinishArgs, "input">
   >;
-  plaidStart?: Resolver<
-    ResolversTypes["PlaidStart"],
+  plaidAuthStart?: Resolver<
+    ResolversTypes["PlaidAuthStart"],
     ParentType,
     ContextType,
-    RequireFields<MutationPlaidStartArgs, "input">
+    RequireFields<MutationPlaidAuthStartArgs, "input">
   >;
   removePlaid?: Resolver<
     ResolversTypes["RemovePlaid"],
@@ -593,6 +593,23 @@ export type PlaidAccountResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type PlaidAuthFinishResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes["PlaidAuthFinish"] = ResolversParentTypes["PlaidAuthFinish"]
+> = ResolversObject<{
+  item_id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type PlaidAuthStartResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes["PlaidAuthStart"] = ResolversParentTypes["PlaidAuthStart"]
+> = ResolversObject<{
+  link_token?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  state?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type PlaidConnectionResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes["PlaidConnection"] = ResolversParentTypes["PlaidConnection"]
@@ -605,23 +622,6 @@ export type PlaidConnectionResolvers<
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   institution?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   kind?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type PlaidFinishResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes["PlaidFinish"] = ResolversParentTypes["PlaidFinish"]
-> = ResolversObject<{
-  item_id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type PlaidStartResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes["PlaidStart"] = ResolversParentTypes["PlaidStart"]
-> = ResolversObject<{
-  link_token?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  state?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -745,9 +745,9 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   NumberFilter?: NumberFilterResolvers<ContextType>;
   Pipe?: PipeResolvers<ContextType>;
   PlaidAccount?: PlaidAccountResolvers<ContextType>;
+  PlaidAuthFinish?: PlaidAuthFinishResolvers<ContextType>;
+  PlaidAuthStart?: PlaidAuthStartResolvers<ContextType>;
   PlaidConnection?: PlaidConnectionResolvers<ContextType>;
-  PlaidFinish?: PlaidFinishResolvers<ContextType>;
-  PlaidStart?: PlaidStartResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   RemovePlaid?: RemovePlaidResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;

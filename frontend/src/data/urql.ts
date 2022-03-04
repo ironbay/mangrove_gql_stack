@@ -88,8 +88,8 @@ export type Mutation = {
   createPipe: Pipe;
   createSlackStart: SlackStart;
   createTodo: Todo;
-  plaidFinish: PlaidFinish;
-  plaidStart: PlaidStart;
+  plaidAuthFinish: PlaidAuthFinish;
+  plaidAuthStart: PlaidAuthStart;
   removePlaid: RemovePlaid;
   removeTodo?: Maybe<Todo>;
   upload: Scalars["String"];
@@ -107,12 +107,12 @@ export type MutationCreateTodoArgs = {
   input: CreateTodoInput;
 };
 
-export type MutationPlaidFinishArgs = {
-  input: PlaidFinishInput;
+export type MutationPlaidAuthFinishArgs = {
+  input: PlaidAuthFinishInput;
 };
 
-export type MutationPlaidStartArgs = {
-  input: PlaidStartInput;
+export type MutationPlaidAuthStartArgs = {
+  input: PlaidAuthStartInput;
 };
 
 export type MutationRemovePlaidArgs = {
@@ -153,32 +153,32 @@ export type PlaidAccount = {
   subcategory: Scalars["String"];
 };
 
+export type PlaidAuthFinish = {
+  __typename?: "PlaidAuthFinish";
+  item_id: Scalars["String"];
+};
+
+export type PlaidAuthFinishInput = {
+  public_token: Scalars["String"];
+  user: Scalars["String"];
+};
+
+export type PlaidAuthStart = {
+  __typename?: "PlaidAuthStart";
+  link_token: Scalars["String"];
+  state: Scalars["String"];
+};
+
+export type PlaidAuthStartInput = {
+  user: Scalars["String"];
+};
+
 export type PlaidConnection = Connection & {
   __typename?: "PlaidConnection";
   accounts: Array<PlaidAccount>;
   id: Scalars["ID"];
   institution: Scalars["String"];
   kind: Scalars["String"];
-};
-
-export type PlaidFinish = {
-  __typename?: "PlaidFinish";
-  item_id: Scalars["String"];
-};
-
-export type PlaidFinishInput = {
-  public_token: Scalars["String"];
-  user: Scalars["String"];
-};
-
-export type PlaidStart = {
-  __typename?: "PlaidStart";
-  link_token: Scalars["String"];
-  state: Scalars["String"];
-};
-
-export type PlaidStartInput = {
-  user: Scalars["String"];
 };
 
 export type Query = {
@@ -394,22 +394,26 @@ export type ConnectionsQuery = {
   };
 };
 
-export type PlaidStartMutationVariables = Exact<{
-  input: PlaidStartInput;
+export type PlaidAuthStartMutationVariables = Exact<{
+  input: PlaidAuthStartInput;
 }>;
 
-export type PlaidStartMutation = {
+export type PlaidAuthStartMutation = {
   __typename?: "Mutation";
-  plaidStart: { __typename?: "PlaidStart"; link_token: string; state: string };
+  plaidAuthStart: {
+    __typename?: "PlaidAuthStart";
+    link_token: string;
+    state: string;
+  };
 };
 
-export type PlaidFinishMutationVariables = Exact<{
-  input: PlaidFinishInput;
+export type PlaidAuthFinishMutationVariables = Exact<{
+  input: PlaidAuthFinishInput;
 }>;
 
-export type PlaidFinishMutation = {
+export type PlaidAuthFinishMutation = {
   __typename?: "Mutation";
-  plaidFinish: { __typename?: "PlaidFinish"; item_id: string };
+  plaidAuthFinish: { __typename?: "PlaidAuthFinish"; item_id: string };
 };
 
 export type RemovePlaidMutationVariables = Exact<{
@@ -580,32 +584,34 @@ export function useConnectionsQuery(
     ...options,
   });
 }
-export const PlaidStartDocument = gql`
-  mutation PlaidStart($input: PlaidStartInput!) {
-    plaidStart(input: $input) {
+export const PlaidAuthStartDocument = gql`
+  mutation plaidAuthStart($input: PlaidAuthStartInput!) {
+    plaidAuthStart(input: $input) {
       link_token
       state
     }
   }
 `;
 
-export function usePlaidStartMutation() {
-  return Urql.useMutation<PlaidStartMutation, PlaidStartMutationVariables>(
-    PlaidStartDocument
-  );
+export function usePlaidAuthStartMutation() {
+  return Urql.useMutation<
+    PlaidAuthStartMutation,
+    PlaidAuthStartMutationVariables
+  >(PlaidAuthStartDocument);
 }
-export const PlaidFinishDocument = gql`
-  mutation PlaidFinish($input: PlaidFinishInput!) {
-    plaidFinish(input: $input) {
+export const PlaidAuthFinishDocument = gql`
+  mutation plaidAuthFinish($input: PlaidAuthFinishInput!) {
+    plaidAuthFinish(input: $input) {
       item_id
     }
   }
 `;
 
-export function usePlaidFinishMutation() {
-  return Urql.useMutation<PlaidFinishMutation, PlaidFinishMutationVariables>(
-    PlaidFinishDocument
-  );
+export function usePlaidAuthFinishMutation() {
+  return Urql.useMutation<
+    PlaidAuthFinishMutation,
+    PlaidAuthFinishMutationVariables
+  >(PlaidAuthFinishDocument);
 }
 export const RemovePlaidDocument = gql`
   mutation RemovePlaid($input: RemovePlaidInput!) {
