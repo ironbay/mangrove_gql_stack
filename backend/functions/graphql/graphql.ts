@@ -3,6 +3,8 @@ import { useContext, Context } from "@mangrove/backend/core/context";
 
 import { TodoResolver } from "./resolvers/todo";
 import { UserResolver } from "./resolvers/user";
+import { PlaidResolver } from "./resolvers/plaid";
+import { SlackResolver } from "./resolvers/slack";
 import { SessionResolver } from "./resolvers/session";
 import { DebugResolver } from "./resolvers/debug";
 import { createGQLHandler } from "@serverless-stack/node/graphql";
@@ -13,7 +15,14 @@ Auth.init(Config.COGNITO_USER_POOL_ID);
 
 export const handler = createGQLHandler<Context>({
   typeDefs,
-  resolvers: [TodoResolver, UserResolver, SessionResolver, DebugResolver],
+  resolvers: [
+    TodoResolver,
+    UserResolver,
+    SessionResolver,
+    DebugResolver,
+    PlaidResolver,
+    SlackResolver,
+  ],
   context: async (req) => {
     const auth = req.event.headers.authorization;
     if (auth) {

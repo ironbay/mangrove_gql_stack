@@ -7,7 +7,7 @@ export const PlaidResolver: Resolvers = {
       const token = await Connection.Plaid.start_auth(args.input.user);
 
       return {
-        public_token: token,
+        link_token: token,
         state: `user state: alan`,
       };
     },
