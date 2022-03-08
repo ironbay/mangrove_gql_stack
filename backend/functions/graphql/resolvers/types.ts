@@ -12,9 +12,9 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>;
 };
-export type RequireFields<T, K extends keyof T> = {
-  [X in Exclude<keyof T, K>]?: T[X];
-} & { [P in K]-?: NonNullable<T[P]> };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & {
+  [P in K]-?: NonNullable<T[P]>;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -48,10 +48,6 @@ export type CreatePipeInput = {
   flags: CreateFlagInput;
   name: Scalars["String"];
   sources: Array<CreateSourceInput>;
-};
-
-export type CreateSlackStartInput = {
-  user: Scalars["String"];
 };
 
 export type CreateSourceInput = {
@@ -99,21 +95,17 @@ export type Flags = {
 export type Mutation = {
   __typename?: "Mutation";
   createPipe: Pipe;
-  createSlackStart: SlackStart;
   createTodo: Todo;
   finishPlaidAuth: FinishPlaidAuth;
   removePlaidConnection: RemovePlaidConnection;
   removeTodo?: Maybe<Todo>;
   startPlaidAuth: StartPlaidAuth;
+  startSlackAuth: StartSlackAuth;
   upload: Scalars["String"];
 };
 
 export type MutationCreatePipeArgs = {
   input: CreatePipeInput;
-};
-
-export type MutationCreateSlackStartArgs = {
-  input: CreateSlackStartInput;
 };
 
 export type MutationCreateTodoArgs = {
@@ -134,6 +126,10 @@ export type MutationRemoveTodoArgs = {
 
 export type MutationStartPlaidAuthArgs = {
   input: StartPlaidAuthInput;
+};
+
+export type MutationStartSlackAuthArgs = {
+  input: StartSlackAuthInput;
 };
 
 export type MutationUploadArgs = {
@@ -217,12 +213,6 @@ export type SlackConnection = Connection & {
   name: Scalars["String"];
 };
 
-export type SlackStart = {
-  __typename?: "SlackStart";
-  state: Scalars["String"];
-  url: Scalars["String"];
-};
-
 export type Source = {
   __typename?: "Source";
   account: PlaidAccount;
@@ -237,6 +227,16 @@ export type StartPlaidAuth = {
 };
 
 export type StartPlaidAuthInput = {
+  user: Scalars["String"];
+};
+
+export type StartSlackAuth = {
+  __typename?: "StartSlackAuth";
+  url: Scalars["String"];
+  user: Scalars["String"];
+};
+
+export type StartSlackAuthInput = {
   user: Scalars["String"];
 };
 
@@ -380,9 +380,6 @@ export type ResolversTypes = ResolversObject<{
   CreateFlagInput: ResolverTypeWrapper<DeepPartial<CreateFlagInput>>;
   CreateNumberFilter: ResolverTypeWrapper<DeepPartial<CreateNumberFilter>>;
   CreatePipeInput: ResolverTypeWrapper<DeepPartial<CreatePipeInput>>;
-  CreateSlackStartInput: ResolverTypeWrapper<
-    DeepPartial<CreateSlackStartInput>
-  >;
   CreateSourceInput: ResolverTypeWrapper<DeepPartial<CreateSourceInput>>;
   CreateTextFilter: ResolverTypeWrapper<DeepPartial<CreateTextFilter>>;
   CreateTodoInput: ResolverTypeWrapper<DeepPartial<CreateTodoInput>>;
@@ -408,10 +405,11 @@ export type ResolversTypes = ResolversObject<{
   Session: ResolverTypeWrapper<DeepPartial<Session>>;
   SlackChannel: ResolverTypeWrapper<DeepPartial<SlackChannel>>;
   SlackConnection: ResolverTypeWrapper<DeepPartial<SlackConnection>>;
-  SlackStart: ResolverTypeWrapper<DeepPartial<SlackStart>>;
   Source: ResolverTypeWrapper<DeepPartial<Source>>;
   StartPlaidAuth: ResolverTypeWrapper<DeepPartial<StartPlaidAuth>>;
   StartPlaidAuthInput: ResolverTypeWrapper<DeepPartial<StartPlaidAuthInput>>;
+  StartSlackAuth: ResolverTypeWrapper<DeepPartial<StartSlackAuth>>;
+  StartSlackAuthInput: ResolverTypeWrapper<DeepPartial<StartSlackAuthInput>>;
   String: ResolverTypeWrapper<DeepPartial<Scalars["String"]>>;
   TextFilter: ResolverTypeWrapper<DeepPartial<TextFilter>>;
   Todo: ResolverTypeWrapper<DeepPartial<Todo>>;
@@ -428,7 +426,6 @@ export type ResolversParentTypes = ResolversObject<{
   CreateFlagInput: DeepPartial<CreateFlagInput>;
   CreateNumberFilter: DeepPartial<CreateNumberFilter>;
   CreatePipeInput: DeepPartial<CreatePipeInput>;
-  CreateSlackStartInput: DeepPartial<CreateSlackStartInput>;
   CreateSourceInput: DeepPartial<CreateSourceInput>;
   CreateTextFilter: DeepPartial<CreateTextFilter>;
   CreateTodoInput: DeepPartial<CreateTodoInput>;
@@ -452,10 +449,11 @@ export type ResolversParentTypes = ResolversObject<{
   Session: DeepPartial<Session>;
   SlackChannel: DeepPartial<SlackChannel>;
   SlackConnection: DeepPartial<SlackConnection>;
-  SlackStart: DeepPartial<SlackStart>;
   Source: DeepPartial<Source>;
   StartPlaidAuth: DeepPartial<StartPlaidAuth>;
   StartPlaidAuthInput: DeepPartial<StartPlaidAuthInput>;
+  StartSlackAuth: DeepPartial<StartSlackAuth>;
+  StartSlackAuthInput: DeepPartial<StartSlackAuthInput>;
   String: DeepPartial<Scalars["String"]>;
   TextFilter: DeepPartial<TextFilter>;
   Todo: DeepPartial<Todo>;
@@ -523,12 +521,6 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreatePipeArgs, "input">
   >;
-  createSlackStart?: Resolver<
-    ResolversTypes["SlackStart"],
-    ParentType,
-    ContextType,
-    RequireFields<MutationCreateSlackStartArgs, "input">
-  >;
   createTodo?: Resolver<
     ResolversTypes["Todo"],
     ParentType,
@@ -558,6 +550,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationStartPlaidAuthArgs, "input">
+  >;
+  startSlackAuth?: Resolver<
+    ResolversTypes["StartSlackAuth"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationStartSlackAuthArgs, "input">
   >;
   upload?: Resolver<
     ResolversTypes["String"],
@@ -677,15 +675,6 @@ export type SlackConnectionResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type SlackStartResolvers<
-  ContextType = Context,
-  ParentType extends ResolversParentTypes["SlackStart"] = ResolversParentTypes["SlackStart"]
-> = ResolversObject<{
-  state?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  url?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type SourceResolvers<
   ContextType = Context,
   ParentType extends ResolversParentTypes["Source"] = ResolversParentTypes["Source"]
@@ -702,6 +691,15 @@ export type StartPlaidAuthResolvers<
 > = ResolversObject<{
   link_token?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   state?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type StartSlackAuthResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes["StartSlackAuth"] = ResolversParentTypes["StartSlackAuth"]
+> = ResolversObject<{
+  url?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -756,9 +754,9 @@ export type Resolvers<ContextType = Context> = ResolversObject<{
   Session?: SessionResolvers<ContextType>;
   SlackChannel?: SlackChannelResolvers<ContextType>;
   SlackConnection?: SlackConnectionResolvers<ContextType>;
-  SlackStart?: SlackStartResolvers<ContextType>;
   Source?: SourceResolvers<ContextType>;
   StartPlaidAuth?: StartPlaidAuthResolvers<ContextType>;
+  StartSlackAuth?: StartSlackAuthResolvers<ContextType>;
   TextFilter?: TextFilterResolvers<ContextType>;
   Todo?: TodoResolvers<ContextType>;
   User?: UserResolvers<ContextType>;

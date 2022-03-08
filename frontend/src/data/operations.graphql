@@ -116,8 +116,9 @@ mutation RemovePlaidConnection($input: RemovePlaidConnectionInput!) {
   }
 }
 
-mutation CreateSlackStart($input: CreateSlackStartInput!) {
-  createSlackStart(input: $input) {
+mutation StartSlackAuth($input: StartSlackAuthInput!) {
+  startSlackAuth(input: $input) {
+    user
     url
   }
 }

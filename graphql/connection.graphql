@@ -15,7 +15,7 @@ type Mutation {
   removePlaidConnection(
     input: RemovePlaidConnectionInput!
   ): RemovePlaidConnection!
-  createSlackStart(input: CreateSlackStartInput!): SlackStart!
+  startSlackAuth(input: StartSlackAuthInput!): StartSlackAuth!
 }
 
 input StartPlaidAuthInput {
@@ -60,13 +60,13 @@ type PlaidAccount {
   subcategory: String!
 }
 
-input CreateSlackStartInput {
+input StartSlackAuthInput {
   user: String!
 }
 
-type SlackStart {
+type StartSlackAuth {
+  user: String!
   url: String!
-  state: String!
 }
 
 type SlackConnection implements Connection {
