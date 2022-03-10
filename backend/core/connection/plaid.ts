@@ -1,4 +1,4 @@
-import { Config } from "@serverless-stack/node";
+import { Config } from "@serverless-stack/node/config";
 import { Entity, Model, Table } from "dynamodb-onetable";
 
 import {

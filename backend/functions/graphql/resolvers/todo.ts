@@ -1,4 +1,4 @@
-import { Todo } from "@mangrove/core";
+import { Todo } from "@mangrove/backend/core/todo";
 import { Resolvers } from "./types";
 
 export const TodoResolver: Resolvers = {

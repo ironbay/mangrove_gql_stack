@@ -47,10 +47,6 @@ export type CreatePipeInput = {
   sources: Array<CreateSourceInput>;
 };
 
-export type CreateSlackStartInput = {
-  user: Scalars["String"];
-};
-
 export type CreateSourceInput = {
   account: Scalars["String"];
   filters: CreateFiltersInput;
@@ -96,21 +92,17 @@ export type Flags = {
 export type Mutation = {
   __typename?: "Mutation";
   createPipe: Pipe;
-  createSlackStart: SlackStart;
   createTodo: Todo;
   finishPlaidAuth: FinishPlaidAuth;
   removePlaidConnection: RemovePlaidConnection;
   removeTodo?: Maybe<Todo>;
   startPlaidAuth: StartPlaidAuth;
+  startSlackAuth: StartSlackAuth;
   upload: Scalars["String"];
 };
 
 export type MutationCreatePipeArgs = {
   input: CreatePipeInput;
-};
-
-export type MutationCreateSlackStartArgs = {
-  input: CreateSlackStartInput;
 };
 
 export type MutationCreateTodoArgs = {
@@ -131,6 +123,10 @@ export type MutationRemoveTodoArgs = {
 
 export type MutationStartPlaidAuthArgs = {
   input: StartPlaidAuthInput;
+};
+
+export type MutationStartSlackAuthArgs = {
+  input: StartSlackAuthInput;
 };
 
 export type MutationUploadArgs = {
@@ -214,12 +210,6 @@ export type SlackConnection = Connection & {
   name: Scalars["String"];
 };
 
-export type SlackStart = {
-  __typename?: "SlackStart";
-  state: Scalars["String"];
-  url: Scalars["String"];
-};
-
 export type Source = {
   __typename?: "Source";
   account: PlaidAccount;
@@ -234,6 +224,16 @@ export type StartPlaidAuth = {
 };
 
 export type StartPlaidAuthInput = {
+  user: Scalars["String"];
+};
+
+export type StartSlackAuth = {
+  __typename?: "StartSlackAuth";
+  url: Scalars["String"];
+  user: Scalars["String"];
+};
+
+export type StartSlackAuthInput = {
   user: Scalars["String"];
 };
 
@@ -278,10 +278,7 @@ export type RemoveTodoMutationVariables = Exact<{
 
 export type RemoveTodoMutation = {
   __typename?: "Mutation";
-  removeTodo?:
-    | { __typename?: "Todo"; id: string; title: string }
-    | null
-    | undefined;
+  removeTodo?: { __typename?: "Todo"; id: string; title: string } | null;
 };
 
 export type CreateTodoMutationVariables = Exact<{
@@ -429,13 +426,13 @@ export type RemovePlaidConnectionMutation = {
   };
 };
 
-export type CreateSlackStartMutationVariables = Exact<{
-  input: CreateSlackStartInput;
+export type StartSlackAuthMutationVariables = Exact<{
+  input: StartSlackAuthInput;
 }>;
 
-export type CreateSlackStartMutation = {
+export type StartSlackAuthMutation = {
   __typename?: "Mutation";
-  createSlackStart: { __typename?: "SlackStart"; url: string };
+  startSlackAuth: { __typename?: "StartSlackAuth"; user: string; url: string };
 };
 
 export const TodosDocument = gql`
@@ -452,7 +449,7 @@ export const TodosDocument = gql`
 `;
 
 export function useTodosQuery(
-  options: Omit<Urql.UseQueryArgs<TodosQueryVariables>, "query"> = {}
+  options?: Omit<Urql.UseQueryArgs<TodosQueryVariables>, "query">
 ) {
   return Urql.useQuery<TodosQuery>({ query: TodosDocument, ...options });
 }
@@ -531,7 +528,7 @@ export const PipesDocument = gql`
 `;
 
 export function usePipesQuery(
-  options: Omit<Urql.UseQueryArgs<PipesQueryVariables>, "query"> = {}
+  options?: Omit<Urql.UseQueryArgs<PipesQueryVariables>, "query">
 ) {
   return Urql.useQuery<PipesQuery>({ query: PipesDocument, ...options });
 }
@@ -581,7 +578,7 @@ export const ConnectionsDocument = gql`
 `;
 
 export function useConnectionsQuery(
-  options: Omit<Urql.UseQueryArgs<ConnectionsQueryVariables>, "query"> = {}
+  options?: Omit<Urql.UseQueryArgs<ConnectionsQueryVariables>, "query">
 ) {
   return Urql.useQuery<ConnectionsQuery>({
     query: ConnectionsDocument,
@@ -632,17 +629,18 @@ export function useRemovePlaidConnectionMutation() {
     RemovePlaidConnectionMutationVariables
   >(RemovePlaidConnectionDocument);
 }
-export const CreateSlackStartDocument = gql`
-  mutation CreateSlackStart($input: CreateSlackStartInput!) {
-    createSlackStart(input: $input) {
+export const StartSlackAuthDocument = gql`
+  mutation StartSlackAuth($input: StartSlackAuthInput!) {
+    startSlackAuth(input: $input) {
+      user
       url
     }
   }
 `;
 
-export function useCreateSlackStartMutation() {
+export function useStartSlackAuthMutation() {
   return Urql.useMutation<
-    CreateSlackStartMutation,
-    CreateSlackStartMutationVariables
-  >(CreateSlackStartDocument);
+    StartSlackAuthMutation,
+    StartSlackAuthMutationVariables
+  >(StartSlackAuthDocument);
 }

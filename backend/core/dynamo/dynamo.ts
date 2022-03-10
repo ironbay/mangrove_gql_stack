@@ -1,5 +1,5 @@
 import { Table as OneTable } from "dynamodb-onetable";
-import { Config } from "@serverless-stack/node";
+import { Config } from "@serverless-stack/node/config";
 import DynamoDB from "aws-sdk/clients/dynamodb";
 
 export const Schema = {
