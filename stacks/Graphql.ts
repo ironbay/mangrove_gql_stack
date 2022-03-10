@@ -16,7 +16,7 @@ export function GraphQL(props: FunctionalStackProps) {
   const graphql = new sst.GraphQLApi(props.stack, "graphql", {
     server: {
       handler: "functions/graphql/graphql.handler",
-      permissions: [db.cluster, upload.bucket],
+      permissions: [db.cluster, upload.bucket, dynamo.table],
       bundle: {
         format: "esm",
       },
