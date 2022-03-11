@@ -11,6 +11,7 @@ import {
 
 import { Dynamo } from "@mangrove/backend/core/dynamo";
 import { SchemaMetaFieldDef } from "graphql";
+import { create } from "domain";
 
 const plaid_config = new PlaidConfig({
   basePath: PlaidEnvironments.development,
@@ -44,12 +45,8 @@ export async function start_auth(user: string) {
 }
 
 export async function finish_auth(user: string, public_token: string) {
-  //   const resp = await api.itemPublicTokenExchange({ public_token });
-  // const { access_token, item_id } = resp.data;
-  const { access_token, item_id } = {
-    access_token: "acc123",
-    item_id: "item123",
-  };
+  const resp = await api.itemPublicTokenExchange({ public_token });
+  const { access_token, item_id } = resp.data;
 
   const conn: PlaidConnection = {
     type: "plaid_connection",
@@ -58,23 +55,16 @@ export async function finish_auth(user: string, public_token: string) {
     token: access_token,
   };
 
-  const created = await PlaidConnection.create(conn);
-
-  console.log(created);
-
-  return "ok";
-  //   return resp.data.item_id;
+  await PlaidConnection.create(conn);
+  return item_id;
 }
 
 export async function remove_connection(user: string, id: string) {
   await PlaidConnection.remove({ user, id });
 
-  // remove from plaid
-  //   const removed_plaid = await api.itemAccessTokenInvalidate({
-  //     access_token: "tok123",
-  //   });
+  await api.itemAccessTokenInvalidate({
+    access_token: "tok123",
+  });
 
-  console.log(removed);
-
-  return "ok";
+  return id;
 }
