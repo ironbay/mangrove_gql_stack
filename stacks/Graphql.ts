@@ -34,7 +34,9 @@ export function GraphQL(props: FunctionalStackProps) {
     db.parameters.RDS_SECRET,
     db.parameters.RDS_DATABASE,
     auth.parameters.COGNITO_USER_POOL_ID,
-    dynamo.parameters.DYNAMO_TABLE
+    dynamo.parameters.DYNAMO_TABLE,
+    new Parameter(props.stack, "SLACK_CLIENT_ID"),
+    new Parameter(props.stack, "SLACK_CLIENT_SECRET")
   );
 
   return graphql;

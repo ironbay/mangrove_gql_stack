@@ -2,3 +2,4 @@ node_modules
 .sst
 .build
 yarn-error.log
+services.ts

@@ -8,7 +8,7 @@ export const PlaidResolver: Resolvers = {
 
       return {
         link_token: token,
-        state: `user state: alan`,
+        state: JSON.stringify({ user: args.input.user }),
       };
     },
     finishPlaidAuth: async (parent, args, ctx) => {
