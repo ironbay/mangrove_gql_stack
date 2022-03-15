@@ -9,9 +9,7 @@ import {
   Products as PlaidProducts,
 } from "plaid";
 
-import { Dynamo } from "@mangrove/backend/core/dynamo";
-import { SchemaMetaFieldDef } from "graphql";
-import { create } from "domain";
+import { Dynamo } from "@mangrove/core/dynamo";
 
 const plaid_config = new PlaidConfig({
   basePath: PlaidEnvironments.development,
@@ -67,4 +65,37 @@ export async function remove_connection(user: string, id: string) {
   });
 
   return id;
+}
+
+export async function connections(user: string) {
+  const items = await PlaidConnection.find({ user });
+
+  const conns = await Promise.all(
+    items.map(async (item) => {
+      const info = await api.itemGet({ access_token: item.token });
+      const inst = await api.institutionsGetById({
+        client_id: Config.PLAID_CLIENT_ID,
+        institution_id: info.data.item.institution_id!,
+        country_codes: [PlaidCountryCodes.Us],
+      });
+
+      const accounts = await api.accountsGet({ access_token: item.token });
+
+      return {
+        id: item.id,
+        kind: "plaid",
+        institution: inst.data.institution.name,
+        accounts: accounts.data.accounts.map((acct) => {
+          return {
+            id: acct.account_id,
+            name: acct.name,
+            category: acct.type,
+            subcategory: acct.subtype,
+          };
+        }),
+      };
+    })
+  );
+
+  return conns;
 }
