@@ -53,3 +53,30 @@ export async function team_info(user: string, id: string) {
     icon: info.team?.icon,
   };
 }
+
+export async function connections(user: string) {
+  const items = await SlackConnection.find({ user });
+  const conns = await Promise.all(
+    items.map(async (item) => {
+      const client = new WebClient(item!.token);
+      const team_info = await client.team.info();
+      const channel_resp = await client.conversations.list();
+
+      return {
+        id: item.id,
+        kind: "slack",
+        name: team_info.team?.name,
+        channels: channel_resp.channels!.map((c) => {
+          return {
+            id: c.id,
+            name: c.name,
+            topic: c.topic,
+            num_members: c.num_members,
+          };
+        }),
+      };
+    })
+  );
+
+  return conns;
+}
