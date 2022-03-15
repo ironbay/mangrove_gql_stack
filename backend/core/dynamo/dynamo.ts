@@ -69,6 +69,14 @@ export const Schema = {
       user: { type: String, required: true },
       token: { type: String, required: true },
     },
+    SlackConnection: {
+      type: { type: String, required: true },
+      pk: { type: String, value: "user#${user}" },
+      sk: { type: String, value: "connection#slack#${id}" },
+      id: { type: String, required: true },
+      user: { type: String, required: true },
+      token: { type: String, required: true },
+    },
   },
 } as const;
 
