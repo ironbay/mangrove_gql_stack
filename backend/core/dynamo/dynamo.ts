@@ -21,6 +21,21 @@ export const Schema = {
       name: { type: String, required: true },
       flag_enabled: { type: Boolean, required: true },
     },
+    Source: {
+      type: { type: String, required: true },
+      pk: { type: String, value: "user#${user}", required: true },
+      sk: {
+        type: String,
+        value: "pipe#${pipe}#source#${id}",
+        required: true,
+      },
+      id: { type: String, required: true },
+      pipe: { type: String, required: true },
+      user: { type: String, required: true },
+      connection: { type: String, required: true },
+      account: { type: String, required: true },
+      kind: { type: String, required: true },
+    },
     NumberFilter: {
       type: { type: String },
       pk: { type: String, value: "user#${user}" },

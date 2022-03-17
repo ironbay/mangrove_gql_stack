@@ -23,7 +23,7 @@ const plaid_config = new PlaidConfig({
 
 const api = new PlaidApi(plaid_config);
 
-type PlaidConnection = Entity<typeof Dynamo.Schema.models.PlaidConnection>;
+type PlaidConnection = Entity<typeof Dynamr.Schema.models.PlaidConnection>;
 
 const PlaidConnection =
   Dynamo.Table.getModel<PlaidConnection>("PlaidConnection");
@@ -98,4 +98,17 @@ export async function connections(user: string) {
   );
 
   return conns;
+}
+
+export async function account_info(user: string, conn: string, id: string) {
+  const item = await PlaidConnection.get({ user: user, id: conn });
+  const resp = await api.accountsGet({ access_token: item!.token });
+  const account = resp.data.accounts.find((acct) => acct.account_id === id);
+
+  return {
+    id: account?.account_id,
+    name: account?.name,
+    kind: account?.type,
+    subkind: account?.subtype,
+  };
 }

@@ -15,7 +15,7 @@ type Pipe {
 }
 
 input CreatePipeInput {
-  flags: CreateFlagInput!
+  flag: CreateFlagInput!
   name: String!
   sources: [CreateSourceInput!]!
 }
@@ -52,6 +52,8 @@ type Flags {
 
 type Source {
   id: ID!
+  kind: string
+  connection: string
   account: PlaidAccount!
   filters: [Filter!]!
 }
