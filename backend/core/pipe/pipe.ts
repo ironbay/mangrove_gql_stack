@@ -6,7 +6,7 @@ type Pipe = Entity<typeof Dynamo.Schema.models.Pipe>;
 type NumberFilter = Entity<typeof Dynamo.Schema.models.NumberFilter>;
 type StringFilter = Entity<typeof Dynamo.Schema.models.StringFilter>;
 type Source = Entity<typeof Dynamo.Schema.models.Source>;
-type Destination = Entity<typeof Dynamo.models.Destination>;
+type Destination = Entity<typeof Dynamo.Schema.models.Destination>;
 
 const NumberFilter = Dynamo.Table.getModel<NumberFilter>("NumberFilter");
 const Pipe =
@@ -21,7 +21,7 @@ export async function list(user: string) {
     { parse: true }
   );
 
-  const bingo = await Promise.all(
+  const pipes = await Promise.all(
     items
       .filter((item) => item.type === "PIPE")
       .map((item) => item as Pipe)
@@ -39,9 +39,7 @@ export async function list(user: string) {
       })
   );
 
-  console.log(bingo[0]);
-
-  return bingo;
+  return pipes;
 }
 
 async function build_sources(
@@ -112,7 +110,7 @@ async function build_destinations(
         )!;
 
         return {
-          id: item.id,
+          id: item.id!,
           connection,
           channel,
         };

@@ -45,7 +45,7 @@ export type CreateNumberFilter = {
 };
 
 export type CreatePipeInput = {
-  flags: CreateFlagInput;
+  flag: CreateFlagInput;
   name: Scalars["String"];
   sources: Array<CreateSourceInput>;
 };
@@ -69,6 +69,14 @@ export type CreateTodoInput = {
 export type Debug = {
   __typename?: "Debug";
   database: Scalars["String"];
+};
+
+export type Destination = {
+  __typename?: "Destination";
+  channel: SlackChannel;
+  conn: SlackConnection;
+  id: Scalars["ID"];
+  kind: Scalars["String"];
 };
 
 export type Filter = {
@@ -216,8 +224,10 @@ export type SlackConnection = Connection & {
 export type Source = {
   __typename?: "Source";
   account: PlaidAccount;
+  connection?: Maybe<PlaidConnection>;
   filters: Array<Filter>;
   id: Scalars["ID"];
+  kind: Scalars["String"];
 };
 
 export type StartPlaidAuth = {
@@ -384,6 +394,7 @@ export type ResolversTypes = ResolversObject<{
   CreateTextFilter: ResolverTypeWrapper<DeepPartial<CreateTextFilter>>;
   CreateTodoInput: ResolverTypeWrapper<DeepPartial<CreateTodoInput>>;
   Debug: ResolverTypeWrapper<DeepPartial<Debug>>;
+  Destination: ResolverTypeWrapper<DeepPartial<Destination>>;
   Filter: ResolversTypes["NumberFilter"] | ResolversTypes["TextFilter"];
   FinishPlaidAuth: ResolverTypeWrapper<DeepPartial<FinishPlaidAuth>>;
   FinishPlaidAuthInput: ResolverTypeWrapper<DeepPartial<FinishPlaidAuthInput>>;
@@ -430,6 +441,7 @@ export type ResolversParentTypes = ResolversObject<{
   CreateTextFilter: DeepPartial<CreateTextFilter>;
   CreateTodoInput: DeepPartial<CreateTodoInput>;
   Debug: DeepPartial<Debug>;
+  Destination: DeepPartial<Destination>;
   Filter:
     | ResolversParentTypes["NumberFilter"]
     | ResolversParentTypes["TextFilter"];
@@ -478,6 +490,17 @@ export type DebugResolvers<
   ParentType extends ResolversParentTypes["Debug"] = ResolversParentTypes["Debug"]
 > = ResolversObject<{
   database?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type DestinationResolvers<
+  ContextType = Context,
+  ParentType extends ResolversParentTypes["Destination"] = ResolversParentTypes["Destination"]
+> = ResolversObject<{
+  channel?: Resolver<ResolversTypes["SlackChannel"], ParentType, ContextType>;
+  conn?: Resolver<ResolversTypes["SlackConnection"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  kind?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -680,8 +703,14 @@ export type SourceResolvers<
   ParentType extends ResolversParentTypes["Source"] = ResolversParentTypes["Source"]
 > = ResolversObject<{
   account?: Resolver<ResolversTypes["PlaidAccount"], ParentType, ContextType>;
+  connection?: Resolver<
+    Maybe<ResolversTypes["PlaidConnection"]>,
+    ParentType,
+    ContextType
+  >;
   filters?: Resolver<Array<ResolversTypes["Filter"]>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  kind?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -741,6 +770,7 @@ export type UserResolvers<
 export type Resolvers<ContextType = Context> = ResolversObject<{
   Connection?: ConnectionResolvers<ContextType>;
   Debug?: DebugResolvers<ContextType>;
+  Destination?: DestinationResolvers<ContextType>;
   Filter?: FilterResolvers<ContextType>;
   FinishPlaidAuth?: FinishPlaidAuthResolvers<ContextType>;
   Flags?: FlagsResolvers<ContextType>;

@@ -52,7 +52,7 @@ type Flags {
 
 type Source {
   id: ID!
-  kind: string
+  kind: String!
   connection: PlaidConnection
   account: PlaidAccount!
   filters: [Filter!]!
@@ -82,7 +82,7 @@ type TextFilter implements Filter {
 
 type Destination {
   id: ID!
-  conn: SlackConnection
-  channel: SlackChannel
-  kind: string
+  conn: SlackConnection!
+  channel: SlackChannel!
+  kind: String!
 }
