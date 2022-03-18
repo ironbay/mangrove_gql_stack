@@ -90,6 +90,7 @@ export const Schema = {
       id: { type: String, required: true },
       user: { type: String, required: true },
       token: { type: String, required: true },
+      institution: { type: String, required: true },
     },
     SlackConnection: {
       type: { type: String, required: true },

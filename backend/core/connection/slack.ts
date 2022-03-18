@@ -82,7 +82,7 @@ export async function connections(user: string) {
 }
 
 export async function get(user: string, id: string) {
-  const item = await SlackConnection.get({ user, id });
+  const item = await SlackConnection.get({ user, id })!;
   const client = new WebClient(item!.token!);
   const info = await client.team.info();
   const channels = await client.conversations.list().then((resp) =>
