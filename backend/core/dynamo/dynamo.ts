@@ -36,6 +36,18 @@ export const Schema = {
       account: { type: String, required: true },
       kind: { type: String, required: true },
     },
+    Destination: {
+      type: { type: String, required: true },
+      pk: { type: String, value: "user#${user}", required: true },
+      sk: {
+        type: String,
+        value: "pipe#${pipe}#destination#${id}",
+        required: true,
+      },
+      kind: { type: String },
+      connection: { type: String, required: true },
+      channel: { type: String, required: true },
+    },
     NumberFilter: {
       type: { type: String },
       pk: { type: String, value: "user#${user}" },
@@ -96,3 +108,8 @@ export const Table = new OneTable({
   name: Config.DYNAMO_TABLE,
   schema: Schema,
 });
+
+export function starts_with(key: string | undefined, text: string) {
+  if (!key) return false;
+  return key.substr(0, text.length) === text;
+}

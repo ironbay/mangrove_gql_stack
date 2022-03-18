@@ -3,10 +3,8 @@ import { Resolvers } from "./types";
 
 export const PipeResolver: Resolvers = {
   User: {
-    pipes: async () => {
-      return {
-        bingo: "bango",
-      };
+    pipes: async (parent, args, ctx) => {
+      return await Pipe.list(parent.id!);
     },
   },
 };
