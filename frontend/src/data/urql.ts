@@ -42,7 +42,7 @@ export type CreateNumberFilter = {
 };
 
 export type CreatePipeInput = {
-  flags: CreateFlagInput;
+  flag: CreateFlagInput;
   name: Scalars["String"];
   sources: Array<CreateSourceInput>;
 };
@@ -66,6 +66,14 @@ export type CreateTodoInput = {
 export type Debug = {
   __typename?: "Debug";
   database: Scalars["String"];
+};
+
+export type Destination = {
+  __typename?: "Destination";
+  channel: SlackChannel;
+  conn: SlackConnection;
+  id: Scalars["ID"];
+  kind: Scalars["String"];
 };
 
 export type Filter = {
@@ -213,8 +221,10 @@ export type SlackConnection = Connection & {
 export type Source = {
   __typename?: "Source";
   account: PlaidAccount;
+  connection?: Maybe<PlaidConnection>;
   filters: Array<Filter>;
   id: Scalars["ID"];
+  kind: Scalars["String"];
 };
 
 export type StartPlaidAuth = {

@@ -13,30 +13,52 @@ export const Schema = {
   },
   models: {
     Pipe: {
-      type: { type: String },
-      pk: { type: String, value: "user#${user_id}" },
-      sk: { type: String, value: "pipe#${id}" },
-      user_id: { type: String },
-      id: { type: String },
+      type: { type: String, required: true },
+      pk: { type: String, value: "user#${user}", required: true },
+      sk: { type: String, value: "pipe#${id}", required: true },
+      id: { type: String, required: true },
+      user: { type: String, required: true },
+      name: { type: String, required: true },
+      flag_enabled: { type: Boolean, required: true },
     },
-    Flag: {
-      type: { type: String },
-      pk: { type: String, value: "user#${user_id}" },
-      sk: { type: String, value: "pipe#${pipe_id}#flag#enabled" },
-      user_id: { type: String },
-      id: { type: String },
-      enabled: { type: Boolean },
+    Source: {
+      type: { type: String, required: true },
+      pk: { type: String, value: "user#${user}", required: true },
+      sk: {
+        type: String,
+        value: "pipe#${pipe}#source#${id}",
+        required: true,
+      },
+      id: { type: String, required: true },
+      pipe: { type: String, required: true },
+      user: { type: String, required: true },
+      connection: { type: String, required: true },
+      account: { type: String, required: true },
+      kind: { type: String, required: true },
+    },
+    Destination: {
+      type: { type: String, required: true },
+      pk: { type: String, value: "user#${user}", required: true },
+      sk: {
+        type: String,
+        value: "pipe#${pipe}#destination#${id}",
+        required: true,
+      },
+      id: { type: String, required: true },
+      kind: { type: String, required: true },
+      connection: { type: String, required: true },
+      channel: { type: String, required: true },
     },
     NumberFilter: {
       type: { type: String },
-      pk: { type: String, value: "user#${user_id}" },
+      pk: { type: String, value: "user#${user}" },
       sk: {
         type: String,
-        value: "pipe#${pipe_id}#source#${source_id}#filter#${id}",
+        value: "pipe#${pipe}#source#${source}#filter#${id}",
       },
-      user_id: { type: String },
-      pipe_id: { type: String },
-      source_id: { type: String },
+      user: { type: String },
+      pipe: { type: String, required: true },
+      source: { type: String },
       id: { type: String },
       account: { type: String },
       kind: { type: String },
@@ -46,14 +68,14 @@ export const Schema = {
     },
     StringFilter: {
       type: { type: String },
-      pk: { type: String, value: "user#${user_id}" },
+      pk: { type: String, value: "user#${user}" },
       sk: {
         type: String,
-        value: "pipe#${pipe_id}#source#${source_id}#filter#${id}",
+        value: "pipe#${pipe}#source#${source}#filter#${id}",
       },
-      user_id: { type: String },
-      pipe_id: { type: String },
-      source_id: { type: String },
+      user: { type: String },
+      pipe: { type: String },
+      source: { type: String },
       id: { type: String },
       account: { type: String },
       kind: { type: String },
@@ -68,6 +90,7 @@ export const Schema = {
       id: { type: String, required: true },
       user: { type: String, required: true },
       token: { type: String, required: true },
+      institution: { type: String, required: true },
     },
     SlackConnection: {
       type: { type: String, required: true },
@@ -87,3 +110,8 @@ export const Table = new OneTable({
   name: Config.DYNAMO_TABLE,
   schema: Schema,
 });
+
+export function starts_with(key: string | undefined, text: string) {
+  if (!key) return false;
+  return key.substr(0, text.length) === text;
+}

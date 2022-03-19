@@ -1,5 +1,5 @@
 import { Config } from "@serverless-stack/node/config";
-import { Entity, Model, Table } from "dynamodb-onetable";
+import { Entity } from "dynamodb-onetable";
 
 import {
   Configuration as PlaidConfig,
@@ -10,6 +10,7 @@ import {
 } from "plaid";
 
 import { Dynamo } from "@mangrove/core/dynamo";
+import { cursorPaginationEnabledMethods } from "@slack/web-api";
 
 const plaid_config = new PlaidConfig({
   basePath: PlaidEnvironments.development,
@@ -24,7 +25,6 @@ const plaid_config = new PlaidConfig({
 const api = new PlaidApi(plaid_config);
 
 type PlaidConnection = Entity<typeof Dynamo.Schema.models.PlaidConnection>;
-
 const PlaidConnection =
   Dynamo.Table.getModel<PlaidConnection>("PlaidConnection");
 
@@ -46,11 +46,17 @@ export async function finish_auth(user: string, public_token: string) {
   const resp = await api.itemPublicTokenExchange({ public_token });
   const { access_token, item_id } = resp.data;
 
+  const item_info = await api.itemGet({
+    access_token,
+    client_id: Config.PLAID_CLIENT_ID,
+  })!;
+
   const conn: PlaidConnection = {
     type: "plaid_connection",
     id: item_id,
     user: user,
     token: access_token,
+    institution: item_info.data.item.institution_id!,
   };
 
   await PlaidConnection.create(conn);
@@ -79,23 +85,49 @@ export async function connections(user: string) {
         country_codes: [PlaidCountryCodes.Us],
       });
 
-      const accounts = await api.accountsGet({ access_token: item.token });
-
       return {
         id: item.id,
         kind: "plaid",
         institution: inst.data.institution.name,
-        accounts: accounts.data.accounts.map((acct) => {
-          return {
-            id: acct.account_id,
-            name: acct.name,
-            category: acct.type,
-            subcategory: acct.subtype,
-          };
-        }),
+        accounts: await accounts(item.token),
       };
     })
   );
 
   return conns;
+}
+
+export async function get(user: string, id: string) {
+  const item = await PlaidConnection.get({ user, id })!;
+
+  return {
+    id: item!.id,
+    kind: "plaid",
+    institution: item?.institution,
+    accounts: await accounts(item!.token),
+  };
+}
+
+async function accounts(token: string) {
+  const resp = await api.accountsGet({ access_token: token });
+
+  return resp.data.accounts.map((acct) => ({
+    id: acct.account_id,
+    name: acct.name,
+    category: acct.type,
+    subcategory: acct.subtype,
+  }));
+}
+
+export async function account_info(user: string, conn: string, id: string) {
+  const item = await PlaidConnection.get({ user: user, id: conn })!;
+  const resp = await api.accountsGet({ access_token: item!.token });
+  const account = resp.data.accounts.find((acct) => acct.account_id === id);
+
+  return {
+    id: account?.account_id,
+    name: account?.name,
+    kind: account?.type,
+    subkind: account?.subtype,
+  };
 }

@@ -15,7 +15,7 @@ type Pipe {
 }
 
 input CreatePipeInput {
-  flags: CreateFlagInput!
+  flag: CreateFlagInput!
   name: String!
   sources: [CreateSourceInput!]!
 }
@@ -52,6 +52,8 @@ type Flags {
 
 type Source {
   id: ID!
+  kind: String!
+  connection: PlaidConnection
   account: PlaidAccount!
   filters: [Filter!]!
 }
@@ -76,4 +78,11 @@ type TextFilter implements Filter {
   name: String!
   op: String!
   text: String!
+}
+
+type Destination {
+  id: ID!
+  conn: SlackConnection!
+  channel: SlackChannel!
+  kind: String!
 }
