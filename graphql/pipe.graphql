@@ -4,6 +4,7 @@ type User {
 
 type Mutation {
   createPipe(input: CreatePipeInput!): Pipe!
+  removePipe(id: String!): Pipe!
 }
 
 type Pipe {
