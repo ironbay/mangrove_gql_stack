@@ -77,15 +77,15 @@ async function build_sources(
             };
           });
 
-        const account = await Connection.Plaid.account_info(
-          user,
-          source.connection,
-          source.account
+        const connection = await Connection.Plaid.get(user, source.connection);
+        const account = connection.accounts.find(
+          (acct) => acct.id === source.account
         );
 
         return {
           id: source.id,
           filters: filters,
+          connection,
           account,
         };
       })
