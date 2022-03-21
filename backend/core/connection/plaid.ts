@@ -1,5 +1,6 @@
 import { Config } from "@serverless-stack/node/config";
 import { Entity } from "dynamodb-onetable";
+import { Context } from "../context";
 
 import {
   Configuration as PlaidConfig,
@@ -63,14 +64,15 @@ export async function finish_auth(user: string, public_token: string) {
   return item_id;
 }
 
-export async function remove_connection(user: string, id: string) {
-  await PlaidConnection.remove({ user, id });
+export async function remove(ctx: Context, id: string) {
+  const user = ctx.assertAuthenticated();
+  const item = await PlaidConnection.get({ user: user.id, id });
+  const connection = await get(ctx, id);
 
-  await api.itemAccessTokenInvalidate({
-    access_token: "tok123",
-  });
+  await api.itemAccessTokenInvalidate({ access_token: item!.token });
+  await PlaidConnection.remove({ id: item!.id });
 
-  return id;
+  return connection;
 }
 
 export async function connections(user: string) {
@@ -97,7 +99,7 @@ export async function connections(user: string) {
   return conns;
 }
 
-export async function get(user: string, id: string) {
+export async function get(ctx: Context, id: string) {
   const item = await PlaidConnection.get({ user, id })!;
 
   return {

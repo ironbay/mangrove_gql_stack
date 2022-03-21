@@ -105,7 +105,9 @@ export type Mutation = {
   createPipe: Pipe;
   createTodo: Todo;
   finishPlaidAuth: FinishPlaidAuth;
-  removePlaidConnection: RemovePlaidConnection;
+  removePipe: Pipe;
+  removePlaidConnection: PlaidConnection;
+  removeSlackConnection: SlackConnection;
   removeTodo?: Maybe<Todo>;
   startPlaidAuth: StartPlaidAuth;
   startSlackAuth: StartSlackAuth;
@@ -124,8 +126,16 @@ export type MutationFinishPlaidAuthArgs = {
   input: FinishPlaidAuthInput;
 };
 
+export type MutationRemovePipeArgs = {
+  id: Scalars["String"];
+};
+
 export type MutationRemovePlaidConnectionArgs = {
-  input: RemovePlaidConnectionInput;
+  id: Scalars["String"];
+};
+
+export type MutationRemoveSlackConnectionArgs = {
+  id: Scalars["String"];
 };
 
 export type MutationRemoveTodoArgs = {
@@ -192,12 +202,10 @@ export type QueryUserArgs = {
 export type RemovePlaidConnection = {
   __typename?: "RemovePlaidConnection";
   id: Scalars["ID"];
-  user_id: Scalars["String"];
 };
 
 export type RemovePlaidConnectionInput = {
   id: Scalars["ID"];
-  user_id: Scalars["String"];
 };
 
 export type Session = {
@@ -556,11 +564,23 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationFinishPlaidAuthArgs, "input">
   >;
-  removePlaidConnection?: Resolver<
-    ResolversTypes["RemovePlaidConnection"],
+  removePipe?: Resolver<
+    ResolversTypes["Pipe"],
     ParentType,
     ContextType,
-    RequireFields<MutationRemovePlaidConnectionArgs, "input">
+    RequireFields<MutationRemovePipeArgs, "id">
+  >;
+  removePlaidConnection?: Resolver<
+    ResolversTypes["PlaidConnection"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationRemovePlaidConnectionArgs, "id">
+  >;
+  removeSlackConnection?: Resolver<
+    ResolversTypes["SlackConnection"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationRemoveSlackConnectionArgs, "id">
   >;
   removeTodo?: Resolver<
     Maybe<ResolversTypes["Todo"]>,
@@ -660,7 +680,6 @@ export type RemovePlaidConnectionResolvers<
   ParentType extends ResolversParentTypes["RemovePlaidConnection"] = ResolversParentTypes["RemovePlaidConnection"]
 > = ResolversObject<{
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
-  user_id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

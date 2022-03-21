@@ -21,7 +21,7 @@ export const PlaidResolver: Resolvers = {
         item_id,
       };
     },
-    removePlaidConnection: async (parent, args, ctx) => {
+    removePlaidConnection: async (_parent, args, ctx) => {
       await Connection.Plaid.remove_connection(
         args.input.user_id,
         args.input.id

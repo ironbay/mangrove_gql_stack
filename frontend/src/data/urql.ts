@@ -102,7 +102,9 @@ export type Mutation = {
   createPipe: Pipe;
   createTodo: Todo;
   finishPlaidAuth: FinishPlaidAuth;
-  removePlaidConnection: RemovePlaidConnection;
+  removePipe: Pipe;
+  removePlaidConnection: PlaidConnection;
+  removeSlackConnection: SlackConnection;
   removeTodo?: Maybe<Todo>;
   startPlaidAuth: StartPlaidAuth;
   startSlackAuth: StartSlackAuth;
@@ -121,8 +123,16 @@ export type MutationFinishPlaidAuthArgs = {
   input: FinishPlaidAuthInput;
 };
 
+export type MutationRemovePipeArgs = {
+  id: Scalars["String"];
+};
+
 export type MutationRemovePlaidConnectionArgs = {
-  input: RemovePlaidConnectionInput;
+  id: Scalars["String"];
+};
+
+export type MutationRemoveSlackConnectionArgs = {
+  id: Scalars["String"];
 };
 
 export type MutationRemoveTodoArgs = {
@@ -189,12 +199,10 @@ export type QueryUserArgs = {
 export type RemovePlaidConnection = {
   __typename?: "RemovePlaidConnection";
   id: Scalars["ID"];
-  user_id: Scalars["String"];
 };
 
 export type RemovePlaidConnectionInput = {
   id: Scalars["ID"];
-  user_id: Scalars["String"];
 };
 
 export type Session = {
@@ -361,6 +369,15 @@ export type CreatePipeMutation = {
   createPipe: { __typename?: "Pipe"; id: string; name: string };
 };
 
+export type RemovePipeMutationVariables = Exact<{
+  id: Scalars["String"];
+}>;
+
+export type RemovePipeMutation = {
+  __typename?: "Mutation";
+  removePipe: { __typename?: "Pipe"; name: string };
+};
+
 export type ConnectionsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ConnectionsQuery = {
@@ -424,15 +441,14 @@ export type FinishPlaidAuthMutation = {
 };
 
 export type RemovePlaidConnectionMutationVariables = Exact<{
-  input: RemovePlaidConnectionInput;
+  id: Scalars["String"];
 }>;
 
 export type RemovePlaidConnectionMutation = {
   __typename?: "Mutation";
   removePlaidConnection: {
-    __typename?: "RemovePlaidConnection";
-    id: string;
-    user_id: string;
+    __typename?: "PlaidConnection";
+    institution: string;
   };
 };
 
@@ -443,6 +459,15 @@ export type StartSlackAuthMutationVariables = Exact<{
 export type StartSlackAuthMutation = {
   __typename?: "Mutation";
   startSlackAuth: { __typename?: "StartSlackAuth"; user: string; url: string };
+};
+
+export type RemoveSlackConnetionMutationVariables = Exact<{
+  id: Scalars["String"];
+}>;
+
+export type RemoveSlackConnetionMutation = {
+  __typename?: "Mutation";
+  removeSlackConnection: { __typename?: "SlackConnection"; name: string };
 };
 
 export const TodosDocument = gql`
@@ -556,6 +581,19 @@ export function useCreatePipeMutation() {
     CreatePipeDocument
   );
 }
+export const RemovePipeDocument = gql`
+  mutation RemovePipe($id: String!) {
+    removePipe(id: $id) {
+      name
+    }
+  }
+`;
+
+export function useRemovePipeMutation() {
+  return Urql.useMutation<RemovePipeMutation, RemovePipeMutationVariables>(
+    RemovePipeDocument
+  );
+}
 export const ConnectionsDocument = gql`
   query Connections {
     session {
@@ -625,10 +663,9 @@ export function useFinishPlaidAuthMutation() {
   >(FinishPlaidAuthDocument);
 }
 export const RemovePlaidConnectionDocument = gql`
-  mutation RemovePlaidConnection($input: RemovePlaidConnectionInput!) {
-    removePlaidConnection(input: $input) {
-      id
-      user_id
+  mutation RemovePlaidConnection($id: String!) {
+    removePlaidConnection(id: $id) {
+      institution
     }
   }
 `;
@@ -653,4 +690,18 @@ export function useStartSlackAuthMutation() {
     StartSlackAuthMutation,
     StartSlackAuthMutationVariables
   >(StartSlackAuthDocument);
+}
+export const RemoveSlackConnetionDocument = gql`
+  mutation RemoveSlackConnetion($id: String!) {
+    removeSlackConnection(id: $id) {
+      name
+    }
+  }
+`;
+
+export function useRemoveSlackConnetionMutation() {
+  return Urql.useMutation<
+    RemoveSlackConnetionMutation,
+    RemoveSlackConnetionMutationVariables
+  >(RemoveSlackConnetionDocument);
 }

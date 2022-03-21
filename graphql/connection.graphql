@@ -12,10 +12,9 @@ interface Connection {
 type Mutation {
   startPlaidAuth(input: StartPlaidAuthInput!): StartPlaidAuth!
   finishPlaidAuth(input: FinishPlaidAuthInput!): FinishPlaidAuth!
-  removePlaidConnection(
-    input: RemovePlaidConnectionInput!
-  ): RemovePlaidConnection!
+  removePlaidConnection(id: String!): PlaidConnection!
   startSlackAuth(input: StartSlackAuthInput!): StartSlackAuth!
+  removeSlackConnection(id: String!): SlackConnection!
 }
 
 input StartPlaidAuthInput {
@@ -38,12 +37,10 @@ type FinishPlaidAuth {
 
 type RemovePlaidConnection {
   id: ID!
-  user_id: String!
 }
 
 input RemovePlaidConnectionInput {
   id: ID!
-  user_id: String!
 }
 
 type PlaidConnection implements Connection {

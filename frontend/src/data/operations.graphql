@@ -67,6 +67,12 @@ mutation CreatePipe($input: CreatePipeInput!) {
   }
 }
 
+mutation RemovePipe($id: String!) {
+  removePipe(id: $id) {
+    name
+  }
+}
+
 query Connections {
   session {
     currentUser {
@@ -109,10 +115,9 @@ mutation FinishPlaidAuth($input: FinishPlaidAuthInput!) {
   }
 }
 
-mutation RemovePlaidConnection($input: RemovePlaidConnectionInput!) {
-  removePlaidConnection(input: $input) {
-    id
-    user_id
+mutation RemovePlaidConnection($id: String!) {
+  removePlaidConnection(id: $id) {
+    institution
   }
 }
 
@@ -120,5 +125,11 @@ mutation StartSlackAuth($input: StartSlackAuthInput!) {
   startSlackAuth(input: $input) {
     user
     url
+  }
+}
+
+mutation RemoveSlackConnetion($id: String!) {
+  removeSlackConnection(id: $id) {
+    name
   }
 }
