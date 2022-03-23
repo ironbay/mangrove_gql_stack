@@ -10,6 +10,7 @@
   "scripts": {
     "sst:start": "NODE_OPTIONS=--enable-source-maps AWS_PROFILE=ironbay-dev sst start",
     "sst:remove": "NODE_OPTIONS=--enable-source-maps AWS_PROFILE=ironbay-dev sst remove",
+    "sst:update": "sst update",
     "gql:gen": "graphql-codegen -c ./graphql/codegen.yml"
   },
   "devDependencies": {
@@ -19,9 +20,10 @@
     "@graphql-codegen/typescript-operations": "^2.2.2",
     "@graphql-codegen/typescript-resolvers": "^2.4.3",
     "@graphql-codegen/typescript-urql": "^3.4.2",
-    "@serverless-stack/cli": "0.65.1",
-    "@serverless-stack/resources": "0.65.1",
+    "@serverless-stack/cli": "0.69.2",
+    "@serverless-stack/resources": "0.69.2",
     "@tsconfig/node14": "^1.0.1",
+    "aws-cdk-lib": "2.15.0",
     "graphql": "^16.2.0",
     "typescript": "^4.7.0-dev.20220307"
   },

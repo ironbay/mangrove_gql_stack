@@ -1,20 +1,17 @@
-import * as sst from "@serverless-stack/resources";
-import { FunctionalStackProps } from "./Functional";
-import { Parameter } from "./Parameter";
+import {
+  Table,
+  StackContext,
+  TableFieldType,
+} from "@serverless-stack/resources";
 
-export function Dynamo(props: FunctionalStackProps) {
-  const table = new sst.Table(props.stack, "DYNAMO", {
+export function Dynamo(ctx: StackContext) {
+  const table = new Table(ctx.stack, "DYNAMO", {
     fields: {
-      pk: sst.TableFieldType.STRING,
-      sk: sst.TableFieldType.STRING,
+      pk: TableFieldType.STRING,
+      sk: TableFieldType.STRING,
     },
     primaryIndex: { partitionKey: "pk", sortKey: "sk" },
   });
 
-  return {
-    table,
-    parameters: Parameter.create(props.stack, {
-      DYNAMO_TABLE: table.tableName,
-    }),
-  };
+  return table;
 }
