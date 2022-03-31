@@ -6,6 +6,8 @@ import { RemovalPolicy } from "aws-cdk-lib";
 import { GraphQL } from "./Graphql";
 import { Upload } from "./Upload";
 import { Dynamo } from "./Dynamo";
+import { Events } from "./Events";
+import { Rest } from "./Rest";
 import { Parameter } from "./Parameter";
 
 export default async function main(app: sst.App) {
@@ -24,6 +26,8 @@ export default async function main(app: sst.App) {
     .stack(Authentication)
     .stack(Upload)
     .stack(Dynamo)
+    .stack(Events)
+    .stack(Rest)
     .stack(GraphQL)
     .stack(Frontend);
   Parameter.codegen();

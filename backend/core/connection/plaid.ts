@@ -1,6 +1,7 @@
 import { Config } from "@serverless-stack/node/config";
 import { Entity } from "dynamodb-onetable";
 import { Context } from "../context";
+import { EventBridge } from "aws-sdk";
 
 import {
   Configuration as PlaidConfig,
@@ -12,6 +13,7 @@ import {
 
 import { Dynamo } from "@mangrove/core/dynamo";
 import { cursorPaginationEnabledMethods } from "@slack/web-api";
+import { builtinModules } from "module";
 
 const plaid_config = new PlaidConfig({
   basePath: PlaidEnvironments.development,
@@ -132,4 +134,20 @@ export async function account_info(user: string, conn: string, id: string) {
     kind: account?.type,
     subkind: account?.subtype,
   };
+}
+
+type Webhook = {
+  webhook_type: string;
+  webhook_code: string;
+  item_id: string;
+};
+
+export async function incoming(webhook: Webhook) {
+  if (webhook.webhook_type !== "TRANSACTIONS") return;
+
+  const bus = new EventBridge();
+
+  bus.putEvents({
+    Entries: [{ Source: "plaid", Detail: JSON.stringify(webhook) }],
+  });
 }
