@@ -1,5 +1,5 @@
 import { Api, StackContext, use } from "@serverless-stack/resources";
-import { Events } from "./Events";
+import { Events } from "./Bus";
 
 export function Rest(props: StackContext) {
   const api = new Api(props.stack, "REST", {

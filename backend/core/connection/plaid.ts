@@ -142,12 +142,18 @@ type Webhook = {
   item_id: string;
 };
 
-export async function incoming(webhook: Webhook) {
+export async function hook(webhook: Webhook) {
   if (webhook.webhook_type !== "TRANSACTIONS") return;
 
   const bus = new EventBridge();
 
   bus.putEvents({
-    Entries: [{ Source: "plaid", Detail: JSON.stringify(webhook) }],
+    Entries: [
+      {
+        Source: "mangrove.plaid",
+        DetailType: "hook",
+        Detail: JSON.stringify(webhook),
+      },
+    ],
   });
 }

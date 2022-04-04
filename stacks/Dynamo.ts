@@ -3,6 +3,7 @@ import {
   StackContext,
   TableFieldType,
 } from "@serverless-stack/resources";
+import { Parameter } from "./Parameter";
 
 export function Dynamo(ctx: StackContext) {
   const table = new Table(ctx.stack, "DYNAMO", {
@@ -13,5 +14,10 @@ export function Dynamo(ctx: StackContext) {
     primaryIndex: { partitionKey: "pk", sortKey: "sk" },
   });
 
-  return table;
+  return {
+    table,
+    params: Parameter.create(ctx.stack, {
+      DYNAMO_TABLE: table.tableName,
+    }),
+  };
 }

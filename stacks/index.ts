@@ -6,7 +6,7 @@ import { RemovalPolicy } from "aws-cdk-lib";
 import { GraphQL } from "./Graphql";
 import { Upload } from "./Upload";
 import { Dynamo } from "./Dynamo";
-import { Events } from "./Events";
+import { Events } from "./Bus";
 import { Rest } from "./Rest";
 import { Parameter } from "./Parameter";
 
