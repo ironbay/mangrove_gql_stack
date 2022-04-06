@@ -50,9 +50,6 @@ export function Bus(ctx: StackContext) {
     });
   }
 
-  //   save the transactions to dynamo
-  //   publish the event
-
   const dynamo = use(Dynamo);
 
   subscribe({
@@ -65,21 +62,15 @@ export function Bus(ctx: StackContext) {
     parameters: [BUS_NAME, dynamo.params.DYNAMO_TABLE],
   });
 
-  //   const eventBus = new EventBus(ctx.stack, "BUS", {
-  //     rules: {
-  //       plaid_hook: {
-  //         eventPattern: {
-  //           source: ["mangrove.plaid"],
-  //           detailType: ["hook"],
-  //         },
-  //         targets: ["../backend/functions/events/plaid.sync"],
-  //       },
-  //       mangrove_tx: {
-  //         eventPattern: { source: ["mangrove.plaid"], detailType: ["tx.new"] },
-  //         targets: ["../backend/functions/events/plaid.tx"],
-  //       },
-  //     },
-  //   });
+  subscribe({
+    id: "PlaidSyncHandler",
+    types: ["plaid.tx_sync"],
+    function: {
+      handler: "functions/plaid/events.tx_sync",
+      permissions: [dynamo.table],
+    },
+    parameters: [dynamo.params.DYNAMO_TABLE],
+  });
 
   return {
     eventBus,

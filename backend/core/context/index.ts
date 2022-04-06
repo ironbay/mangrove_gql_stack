@@ -1,9 +1,16 @@
-type Actor = UserActor | PublicActor;
+export type Actor = UserActor | PublicActor | PlaidTxActor;
 
 type UserActor = {
   type: "user";
   properties: {
     id: string;
+  };
+};
+
+type PlaidTxActor = {
+  type: "plaid_tx";
+  properties: {
+    item_id: string;
   };
 };
 

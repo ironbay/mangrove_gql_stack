@@ -11,9 +11,20 @@ import {
   Products as PlaidProducts,
 } from "plaid";
 
+declare module "@mangrove/core/bus" {
+  export interface Events {
+    "plaid.hook": {
+      id: string;
+      item_id: string;
+      type: string;
+    };
+    "plaid.tx.synced": {
+      id: string;
+    };
+  }
+}
+
 import { Dynamo } from "@mangrove/core/dynamo";
-import { cursorPaginationEnabledMethods } from "@slack/web-api";
-import { builtinModules } from "module";
 
 const plaid_config = new PlaidConfig({
   basePath: PlaidEnvironments.development,
