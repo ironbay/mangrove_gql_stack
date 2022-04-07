@@ -64,9 +64,9 @@ export function Bus(ctx: StackContext) {
 
   subscribe({
     id: "PlaidSyncHandler",
-    types: ["plaid.tx_sync"],
+    types: ["plaid.tx_new"],
     function: {
-      handler: "functions/plaid/events.tx_sync",
+      handler: "functions/plaid/events.handler",
       permissions: [dynamo.table],
     },
     parameters: [dynamo.params.DYNAMO_TABLE],

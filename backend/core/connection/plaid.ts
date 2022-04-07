@@ -1,7 +1,8 @@
 import { Config } from "@serverless-stack/node/config";
 import { Entity } from "dynamodb-onetable";
 import { Context } from "../context";
-import { EventBridge } from "aws-sdk";
+import { ApiGatewayManagementApi, EventBridge } from "aws-sdk";
+import { DateTime } from "luxon";
 
 import {
   Configuration as PlaidConfig,
@@ -9,16 +10,18 @@ import {
   PlaidEnvironments,
   CountryCode as PlaidCountryCodes,
   Products as PlaidProducts,
+  Transaction as PlaidTransaction,
 } from "plaid";
 
 declare module "@mangrove/core/bus" {
   export interface Events {
     "plaid.hook": {
       id: string;
-      item_id: string;
+      user: string;
+      item: string;
       type: string;
     };
-    "plaid.tx.synced": {
+    "plaid.tx.new": {
       id: string;
     };
   }
@@ -41,6 +44,11 @@ const api = new PlaidApi(plaid_config);
 type PlaidConnection = Entity<typeof Dynamo.Schema.models.PlaidConnection>;
 const PlaidConnection =
   Dynamo.Table.getModel<PlaidConnection>("PlaidConnection");
+
+const PlaidTransaction =
+  Dynamo.Table.getModel<Entity<typeof Dynamo.Schema.models.PlaidTransaction>>(
+    "PlaidTransaction"
+  );
 
 export async function start_auth(user: string) {
   const resp = await api.linkTokenCreate({
@@ -112,14 +120,15 @@ export async function connections(user: string) {
   return conns;
 }
 
-export async function get(ctx: Context, id: string) {
+export async function fromID(user: string, id: string) {
   const item = await PlaidConnection.get({ user, id })!;
 
   return {
     id: item!.id,
     kind: "plaid",
-    institution: item?.institution,
+    institution: item!.institution,
     accounts: await accounts(item!.token),
+    access_token: item!.token,
   };
 }
 
@@ -167,4 +176,41 @@ export async function hook(webhook: Webhook) {
       },
     ],
   });
+}
+
+async function transactions(user: string, conn: string) {
+  return PlaidTransaction.find({ user, conn });
+}
+
+export async function sync(user: string, item: string) {
+  const conn = await fromID(user, item);
+
+  const start = DateTime.now().minus({ days: 7 }).toFormat("yyyy-MM-dd");
+  const end = DateTime.now().minus({ days: 1 }).toFormat("yyyy-MM-dd");
+
+  async function fetch(offset = 0): Promise<PlaidTransaction[]> {
+    const resp = await api.transactionsGet({
+      access_token: conn.access_token,
+      start_date: start,
+      end_date: end,
+      options: {
+        offset,
+      },
+    });
+
+    if (resp.data.transactions.length < resp.data.total_transactions) {
+      return [
+        ...resp.data.transactions,
+        ...(await fetch(offset + resp.data.transactions.length)),
+      ];
+    }
+    return resp.data.transactions;
+  }
+
+  const [existing, next] = await Promise.all([
+    transactions(user, item),
+    fetch(),
+  ]);
+
+  // get the item access token
 }

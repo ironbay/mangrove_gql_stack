@@ -100,6 +100,19 @@ export const Schema = {
       user: { type: String, required: true },
       token: { type: String, required: true },
     },
+    PlaidTransaction: {
+      type: { type: String, required: true },
+      pk: { type: String, value: "user#${user}" },
+      sk: {
+        type: String,
+        value: "connection#plaid#{conn}#transaction#${id}",
+      },
+      id: { type: String, required: true },
+      user: { type: String, required: true },
+      conn: { type: String, required: true },
+      date: { type: String, required: true },
+      data: { type: Object, default: {}, required: true },
+    },
   },
 } as const;
 
