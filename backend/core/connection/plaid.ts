@@ -1,6 +1,9 @@
 import { Config } from "@serverless-stack/node/config";
 import { Entity } from "dynamodb-onetable";
 import { Context } from "../context";
+import { ApiGatewayManagementApi, EventBridge } from "aws-sdk";
+import { DateTime } from "luxon";
+import { Bus } from "@mangrove/core/bus";
 
 import {
   Configuration as PlaidConfig,
@@ -8,10 +11,30 @@ import {
   PlaidEnvironments,
   CountryCode as PlaidCountryCodes,
   Products as PlaidProducts,
+  Transaction as PlaidTransaction,
 } from "plaid";
 
+declare module "@mangrove/core/bus" {
+  export interface Events {
+    "plaid.hook": {
+      id: string;
+      user: string;
+      item: string;
+      type: string;
+    };
+    "plaid.tx.new": {
+      id: string;
+      account_id: string;
+      amount: number;
+      name: string;
+      merchant_name?: string | null;
+    };
+  }
+}
+
 import { Dynamo } from "@mangrove/core/dynamo";
-import { cursorPaginationEnabledMethods } from "@slack/web-api";
+import { stringify } from "querystring";
+import { tx_new } from "functions/plaid/events";
 
 const plaid_config = new PlaidConfig({
   basePath: PlaidEnvironments.development,
@@ -28,6 +51,11 @@ const api = new PlaidApi(plaid_config);
 type PlaidConnection = Entity<typeof Dynamo.Schema.models.PlaidConnection>;
 const PlaidConnection =
   Dynamo.Table.getModel<PlaidConnection>("PlaidConnection");
+
+const PlaidTransaction =
+  Dynamo.Table.getModel<Entity<typeof Dynamo.Schema.models.PlaidTransaction>>(
+    "PlaidTransaction"
+  );
 
 export async function start_auth(user: string) {
   const resp = await api.linkTokenCreate({
@@ -99,14 +127,15 @@ export async function connections(user: string) {
   return conns;
 }
 
-export async function get(ctx: Context, id: string) {
+export async function fromID(user: string, id: string) {
   const item = await PlaidConnection.get({ user, id })!;
 
   return {
     id: item!.id,
     kind: "plaid",
-    institution: item?.institution,
+    institution: item!.institution,
     accounts: await accounts(item!.token),
+    access_token: item!.token,
   };
 }
 
@@ -132,4 +161,96 @@ export async function account_info(user: string, conn: string, id: string) {
     kind: account?.type,
     subkind: account?.subtype,
   };
+}
+
+type Webhook = {
+  webhook_type: string;
+  webhook_code: string;
+  item_id: string;
+};
+
+export async function hook(webhook: Webhook) {
+  if (webhook.webhook_type !== "TRANSACTIONS") return;
+
+  const bus = new EventBridge();
+
+  bus.putEvents({
+    Entries: [
+      {
+        Source: "mangrove.plaid",
+        DetailType: "hook",
+        Detail: JSON.stringify(webhook),
+      },
+    ],
+  });
+}
+
+async function transactions(user: string, conn: string) {
+  return PlaidTransaction.find({ user, conn });
+}
+
+export async function sync(user: string, item: string) {
+  const conn = await fromID(user, item);
+
+  const start = DateTime.now().minus({ days: 7 }).toFormat("yyyy-MM-dd");
+  const end = DateTime.now().minus({ days: 1 }).toFormat("yyyy-MM-dd");
+
+  async function fetch(offset = 0): Promise<PlaidTransaction[]> {
+    const resp = await api.transactionsGet({
+      access_token: conn.access_token,
+      start_date: start,
+      end_date: end,
+      options: {
+        offset,
+      },
+    });
+
+    if (resp.data.transactions.length < resp.data.total_transactions) {
+      return [
+        ...resp.data.transactions,
+        ...(await fetch(offset + resp.data.transactions.length)),
+      ];
+    }
+    return resp.data.transactions;
+  }
+
+  const [existing, next] = await Promise.all([
+    transactions(user, item),
+    fetch(),
+  ]);
+
+  const existing_map = existing.reduce((coll, tx) => {
+    coll[tx.id] = true;
+    return coll;
+  }, {} as Record<string, boolean>);
+
+  const diff = next.filter((tx) => !existing_map[tx.transaction_id]);
+
+  const dynamo_write = Promise.all(
+    diff.map((tx) =>
+      PlaidTransaction.create({
+        user,
+        type: "plaid_tx",
+        id: tx.transaction_id,
+        conn: item,
+        account: tx.account_id,
+        date: tx.date,
+        data: tx,
+      })
+    )
+  );
+
+  const bus_publish = Promise.all(
+    diff.map((d) =>
+      Bus.publish("plaid.tx.new", {
+        id: d.transaction_id,
+        account_id: d.account_id,
+        amount: d.amount,
+        name: d.name,
+        merchant_name: d.merchant_name,
+      })
+    )
+  );
+
+  await Promise.all([dynamo_write, bus_publish]);
 }

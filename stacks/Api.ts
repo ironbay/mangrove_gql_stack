@@ -4,10 +4,12 @@ import { HttpMethods } from "aws-cdk-lib/aws-s3";
 import { Database } from "./Database";
 import { Auth } from "./Auth";
 import { Parameter } from "./Parameter";
+import { Dynamo } from "./Dynamo";
 
 type Props = {
   db: Database["outputs"];
   auth: Auth["outputs"];
+  dynamo: Dynamo["output"];
 };
 
 export class Api extends sst.Stack {

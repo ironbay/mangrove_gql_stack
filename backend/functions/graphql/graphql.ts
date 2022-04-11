@@ -1,5 +1,5 @@
 import { typeDefs } from "./schema";
-import { useContext, Context } from "@mangrove/backend/core/context";
+import { useContext, Context } from "@mangrove/core/context";
 
 import { TodoResolver } from "./resolvers/todo";
 import { UserResolver } from "./resolvers/user";

@@ -4,16 +4,20 @@
   "type": "module",
   "scripts": {},
   "dependencies": {
-    "@serverless-stack/node": "^0.67.2",
+    "@aws-sdk/client-eventbridge": "^3.66.0",
+    "@serverless-stack/node": "0.68.0-next.10",
     "@slack/oauth": "^2.4.0",
     "@slack/web-api": "^6.7.0",
+    "@types/luxon": "^2.3.1",
     "@types/uuid": "^8.3.4",
     "aws-jwt-verify": "^2.0.0",
     "aws-sdk": "^2.1058.0",
     "dynamodb-onetable": "^2.3.2",
     "kysely": "^0.16.6",
     "kysely-data-api": "^0.0.9",
-    "plaid": "^10.0.0"
+    "luxon": "^2.3.1",
+    "plaid": "^10.0.0",
+    "ulid": "^2.3.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.89",
