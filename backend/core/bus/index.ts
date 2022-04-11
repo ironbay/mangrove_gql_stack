@@ -1,16 +1,30 @@
+import {
+  EventBridgeClient,
+  PutEventsCommand,
+} from "@aws-sdk/client-eventbridge";
 import { SQSRecord, SQSEvent } from "aws-lambda";
 import { Actor } from "../context";
+import { ulid } from "ulid";
+import { Config } from "@serverless-stack/node/config";
+
+const client = new EventBridgeClient({});
 
 export interface Events {}
 export type EventTypes = keyof Events;
 export type FromType<T extends EventTypes> = payload<T, Events[T]>;
+
+export interface Event {
+  id: string;
+  source: "mangrove";
+  type: string;
+  properties: any;
+}
 
 export type payload<T extends string, P extends Record<string, any>> = {
   id: string;
   source: "mangrove";
   type: T;
   properties: P;
-  actor: Actor;
 };
 
 export function createHandler<T extends EventTypes>(
@@ -42,6 +56,33 @@ export function createHandler<T extends EventTypes>(
   };
 
   return results;
+}
+
+export async function publish<T extends EventTypes>(
+  type: T,
+  properties: Events[T]
+) {
+  const payload: Event = {
+    id: ulid(),
+    source: "mangrove",
+    type,
+    properties,
+  };
+
+  await client.send(
+    new PutEventsCommand({
+      Entries: [
+        {
+          EventBusName: Config.BUS_NAME,
+          Detail: JSON.stringify(payload),
+          Source: payload.source,
+          DetailType: type,
+        },
+      ],
+    })
+  );
+
+  return payload;
 }
 
 export * as Bus from ".";

@@ -111,6 +111,7 @@ export const Schema = {
       user: { type: String, required: true },
       conn: { type: String, required: true },
       date: { type: String, required: true },
+      account: { type: String, required: true },
       data: { type: Object, default: {}, required: true },
     },
   },

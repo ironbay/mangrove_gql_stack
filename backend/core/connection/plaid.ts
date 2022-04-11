@@ -3,6 +3,7 @@ import { Entity } from "dynamodb-onetable";
 import { Context } from "../context";
 import { ApiGatewayManagementApi, EventBridge } from "aws-sdk";
 import { DateTime } from "luxon";
+import { Bus } from "@mangrove/core/bus";
 
 import {
   Configuration as PlaidConfig,
@@ -23,11 +24,17 @@ declare module "@mangrove/core/bus" {
     };
     "plaid.tx.new": {
       id: string;
+      account_id: string;
+      amount: number;
+      name: string;
+      merchant_name?: string | null;
     };
   }
 }
 
 import { Dynamo } from "@mangrove/core/dynamo";
+import { stringify } from "querystring";
+import { tx_new } from "functions/plaid/events";
 
 const plaid_config = new PlaidConfig({
   basePath: PlaidEnvironments.development,
@@ -212,5 +219,38 @@ export async function sync(user: string, item: string) {
     fetch(),
   ]);
 
-  // get the item access token
+  const existing_map = existing.reduce((coll, tx) => {
+    coll[tx.id] = true;
+    return coll;
+  }, {} as Record<string, boolean>);
+
+  const diff = next.filter((tx) => !existing_map[tx.transaction_id]);
+
+  const dynamo_write = Promise.all(
+    diff.map((tx) =>
+      PlaidTransaction.create({
+        user,
+        type: "plaid_tx",
+        id: tx.transaction_id,
+        conn: item,
+        account: tx.account_id,
+        date: tx.date,
+        data: tx,
+      })
+    )
+  );
+
+  const bus_publish = Promise.all(
+    diff.map((d) =>
+      Bus.publish("plaid.tx.new", {
+        id: d.transaction_id,
+        account_id: d.account_id,
+        amount: d.amount,
+        name: d.name,
+        merchant_name: d.merchant_name,
+      })
+    )
+  );
+
+  await Promise.all([dynamo_write, bus_publish]);
 }
