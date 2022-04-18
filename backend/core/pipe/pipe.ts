@@ -66,7 +66,7 @@ const PlaidSourceEntity = new Entity({
     service: "mangrove",
   },
   attributes: {
-    sourceID: {
+    plaidSourceID: {
       type: "string",
       required: true,
       readOnly: true,
@@ -92,6 +92,53 @@ const PlaidSourceEntity = new Entity({
       pk: {
         field: "pk",
         composite: ["pipeID"],
+      },
+      sk: {
+        field: "sk",
+        composite: ["plaidSourceID"],
+      },
+    },
+  },
+});
+
+const NumberFilter = new Entity({
+  model: {
+    entity: "NumberFilter",
+    version: "1",
+    service: "mangrove",
+  },
+  attributes: {
+    numberFilterID: {
+      type: "string",
+      required: true,
+      readOnly: true,
+    },
+    sourceID: {
+      type: "string",
+      required: true,
+      readOnly: true,
+    },
+    op: {
+      type: "string",
+      required: true,
+      readOnly: false,
+    },
+    kind: {
+      type: "string",
+      required: true,
+      readOnly: true,
+    },
+    value: {
+      type: "number",
+      required: true,
+      readOnly: false,
+    },
+  },
+  indexes: {
+    primary: {
+      pk: {
+        field: "pk",
+        composite: ["numberFilterID"],
       },
       sk: {
         field: "sk",
