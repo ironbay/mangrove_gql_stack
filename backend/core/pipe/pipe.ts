@@ -1,46 +1,139 @@
 import { Dynamo } from "@mangrove/core/dynamo";
-import { Entity } from "dynamodb-onetable";
+// import { Entity } from "dynamodb-onetable";
 import { Connection } from "@mangrove/core/connection";
 
-type Pipe = Entity<typeof Dynamo.Schema.models.Pipe>;
-type NumberFilter = Entity<typeof Dynamo.Schema.models.NumberFilter>;
-type StringFilter = Entity<typeof Dynamo.Schema.models.StringFilter>;
-type Source = Entity<typeof Dynamo.Schema.models.Source>;
-type Destination = Entity<typeof Dynamo.Schema.models.Destination>;
+import { Entity } from "electrodb";
 
-const NumberFilter = Dynamo.Table.getModel<NumberFilter>("NumberFilter");
-const Pipe =
-  Dynamo.Table.getModel<Entity<typeof Dynamo.Schema.models.Pipe>>("Pipe");
-
-export async function list(user: string) {
-  const items = await Dynamo.Table.queryItems(
-    {
-      pk: `user#${user}`,
-      sk: { begins: "pipe#" },
+const PipeEntity = new Entity({
+  model: {
+    entity: "Pipe",
+    version: "1",
+    service: "mangrove",
+  },
+  attributes: {
+    pipeId: {
+      type: "string",
+      required: true,
+      readOnly: true,
     },
-    { parse: true }
-  );
+    userID: {
+      type: "string",
+      required: true,
+      readOnly: true,
+    },
+    name: {
+      type: "string",
+    },
+    flags: {
+      type: "map",
+      properties: {
+        enabled: {
+          type: "boolean",
+          required: true,
+        },
+      },
+    },
+  },
+  indexes: {
+    primary: {
+      pk: {
+        field: "pk",
+        composite: ["pipeID"],
+      },
+      sk: {
+        field: "sk",
+        composite: ["pipeID"],
+      },
+    },
+    user: {
+      index: "gs1",
+      pk: {
+        field: "gs1pk",
+        composite: ["userID"],
+      },
+      sk: {
+        field: "gs1sk",
+        composite: ["pipeID"],
+      },
+    },
+  },
+});
 
-  const pipes = await Promise.all(
-    items
-      .filter((item) => item.type === "PIPE")
-      .map((item) => item as Pipe)
-      .map(async (pipe) => {
-        const sources = await build_sources(user, pipe.id, items);
-        const destinations = await build_destinations(user, pipe.id, items);
+const PlaidSourceEntity = new Entity({
+  model: {
+    entity: "PlaidSource",
+    version: "1",
+    service: "mangrove",
+  },
+  attributes: {
+    sourceID: {
+      type: "string",
+      required: true,
+      readOnly: true,
+    },
+    pipeID: {
+      type: "string",
+      required: true,
+      readOnly: true,
+    },
+    plaidItem: {
+      type: "string",
+      required: true,
+      readOnly: false,
+    },
+    plaidAccount: {
+      type: "string",
+      required: true,
+      readOnly: false,
+    },
+  },
+  indexes: {
+    primary: {
+      pk: {
+        field: "pk",
+        composite: ["pipeID"],
+      },
+      sk: {
+        field: "sk",
+        composite: ["sourceID"],
+      },
+    },
+  },
+});
 
-        return {
-          flags: {
-            enabled: pipe.flag_enabled,
-          },
-          sources,
-          destinations,
-        };
-      })
-  );
-
-  return pipes;
+export async function from_user(user: string) {
+  const;
 }
+
+// export async function list(user: string) {
+//   const items = await Dynamo.Table.queryItems(
+//     {
+//       pk: `user#${user}`,
+//       sk: { begins: "pipe#" },
+//     },
+//     { parse: true }
+//   );
+
+//   const pipes = await Promise.all(
+//     items
+//       .filter((item) => item.type === "PIPE")
+//       .map((item) => item as Pipe)
+//       .map(async (pipe) => {
+//         const sources = await build_sources(user, pipe.id, items);
+//         const destinations = await build_destinations(user, pipe.id, items);
+
+//         return {
+//           flags: {
+//             enabled: pipe.flag_enabled,
+//           },
+//           sources,
+//           destinations,
+//         };
+//       })
+//   );
+
+//   return pipes;
+// }
 
 async function build_sources(
   user: string,
