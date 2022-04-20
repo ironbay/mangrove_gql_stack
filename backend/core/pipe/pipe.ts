@@ -2,7 +2,11 @@ import { Dynamo } from "@mangrove/core/dynamo";
 // import { Entity } from "dynamodb-onetable";
 import { Connection } from "@mangrove/core/connection";
 
-import { Entity } from "electrodb";
+import { Entity, EntityItem } from "electrodb";
+import { Pipe } from ".";
+import { Source } from "graphql";
+import { EventSourceState } from "@aws-sdk/client-eventbridge";
+import { FilterNode } from "kysely";
 
 const PipeEntity = new Entity({
   model: {
@@ -53,7 +57,7 @@ const PipeEntity = new Entity({
       },
       sk: {
         field: "gs1sk",
-        composite: ["pipeID"],
+        composite: []
       },
     },
   },
@@ -66,12 +70,12 @@ const PlaidSourceEntity = new Entity({
     service: "mangrove",
   },
   attributes: {
-    plaidSourceID: {
+    pipeID: {
       type: "string",
       required: true,
       readOnly: true,
     },
-    pipeID: {
+    sourceID: {
       type: "string",
       required: true,
       readOnly: true,
@@ -95,24 +99,29 @@ const PlaidSourceEntity = new Entity({
       },
       sk: {
         field: "sk",
-        composite: ["plaidSourceID"],
+        composite: ["sourceID"],
       },
     },
   },
 });
 
-const NumberFilter = new Entity({
+const NumberFilterEntity = new Entity({
   model: {
     entity: "NumberFilter",
     version: "1",
     service: "mangrove",
   },
   attributes: {
-    numberFilterID: {
+    filterID: {
       type: "string",
       required: true,
       readOnly: true,
     },
+    pipeID: {
+        type: "string", 
+        required: true, 
+        readOnly: true
+    }, 
     sourceID: {
       type: "string",
       required: true,
@@ -135,21 +144,72 @@ const NumberFilter = new Entity({
     },
   },
   indexes: {
-    primary: {
-      pk: {
-        field: "pk",
-        composite: ["numberFilterID"],
-      },
-      sk: {
-        field: "sk",
-        composite: ["sourceID"],
-      },
-    },
+      numberFilter: {
+          pk: {
+              field: "pk", 
+              composite: ["filterID"], 
+          }, 
+          sk: {
+              field: "sk", 
+              composite: ["pipeID", "sourceID"]
+          } 
+      }, 
+      pipe: {
+          index: "gsi1", 
+          pk: {
+              field: "gsi1pk", 
+              composite: ["pipeID"]
+          }, 
+          sk: {
+              field: "gsi1sk", 
+              composite: ["sourceID"]
+          }
+      }, 
+      source: {
+          index: "gsi2", 
+          pk: {
+              field: "gsi2pk", 
+              composite: ["sourceID"]
+          }, 
+          sk: {
+              field: "gsi2sk", 
+              composite: []
+          }
+      }
   },
 });
 
-export async function from_user(user: string) {
-  const;
+type PipeEntityType = EntityItem<typeof PipeEntity>
+
+export async function for_user(user: string) {
+    const pipes = await PipeEntity.query.user({ userID: user }).go();
+}
+
+async function sources(pipe: string) {
+    const sources = await PlaidSourceEntity.query.primary({pipeID: pipe}).go()
+    
+    for (let source of sources) {
+        const filters = await NumberFilterEntity.query.source({ sourceID: source.sourceID})
+    }
+}
+
+export async function filters(pipe: string, source: string ) {
+    return NumberFilterEntity.query.pipe({pipeID: pipe, sourceID: source}).go()
+}
+
+
+
+//   get all pipes for a user 
+//  get all sources for a pipe 
+//  get all filters for source 
+
+//   const plaid_source_query = PlaidSourceEntity.query.pipes({ })
+  
+//   for (let pipe of pipes) {
+//       plaid_source_query.where({})
+//   }
+
+//   const sources = await PlaidSourceEntity.query.primary({pipeID => })
 }
 
 // export async function list(user: string) {
